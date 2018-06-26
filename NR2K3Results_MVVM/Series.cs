@@ -20,17 +20,6 @@ namespace NR2K3Results_MVVM
         public string RosterFile { get; set; }
         public string SeriesLogo { get; set; }
         public string SancLogo { get; set; }
-        public override string ToString()
-        {
-            return SeriesName;
-        }
-        public override bool Equals(object obj)
-        {
-            if (obj is Series)
-            {
-                return ((Series)obj).Id == Id;
-            } else
-                return false;
-        }
+        public string NR2K3Dir { get; set; }
     }
 }

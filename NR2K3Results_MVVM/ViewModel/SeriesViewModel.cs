@@ -19,7 +19,7 @@ namespace NR2K3Results_MVVM.ViewModel
         private String RosterFull;
         private String SeriesFull;
         private String SancFull;
-        private NR2k3ResultsEntities context = new NR2k3ResultsEntities();
+        private NR2K3ResultsEntities context = new NR2K3ResultsEntities();
 
         private String name;
         private String shortName;

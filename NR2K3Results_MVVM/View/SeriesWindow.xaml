@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:NR2K3Results_MVVM.View"
         mc:Ignorable="d"
         Title="Series" Height="271.005" Width="450.079"
-        DataContext="{Binding Path=Series, Source={StaticResource Locator}}" >
+        DataContext="{Binding Path=Series, Source={StaticResource Locator}}" ResizeMode="NoResize" >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding OnCloseCommand}" />

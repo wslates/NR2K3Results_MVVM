@@ -13,10 +13,10 @@ namespace NR2K3Results_MVVM
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class NR2k3ResultsEntities : DbContext
+    public partial class NR2K3ResultsEntities : DbContext
     {
-        public NR2k3ResultsEntities()
-            : base("name=NR2k3ResultsEntities")
+        public NR2K3ResultsEntities()
+            : base("name=NR2K3ResultsEntities")
         {
         }
     
@@ -25,7 +25,6 @@ namespace NR2K3Results_MVVM
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AppData> AppDatas { get; set; }
         public virtual DbSet<Series> Series { get; set; }
     }
 }

@@ -127,7 +127,7 @@ namespace NR2K3Results_MVVM.ViewModel
                 string title = string.Concat("Deleting ", selectedSeries);
                 if (MessageBox.Show(message, title, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    using (var db = new NR2k3ResultsEntities())
+                    using (var db = new NR2K3ResultsEntities())
                     {
                         Series s = db.Series.Where(d => d.SeriesName.Equals(SelectedSeries)).FirstOrDefault();
                         db.Series.Remove(s);
@@ -158,7 +158,7 @@ namespace NR2K3Results_MVVM.ViewModel
 
         private void UpdateSeries()
         {
-            using (var db = new NR2k3ResultsEntities())
+            using (var db = new NR2K3ResultsEntities())
             {
                 Series.Clear();
                 foreach (string s in db.Series.Select(d => d.SeriesName))
