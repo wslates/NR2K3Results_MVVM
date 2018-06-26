@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:NR2K3Results_MVVM.View"
         mc:Ignorable="d"
-        Title="Series" Height="271.005" Width="450.079"
+        Title="Series" Height="279.005" Width="450.079"
         DataContext="{Binding Path=Series, Source={StaticResource Locator}}" ResizeMode="NoResize" >
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
@@ -18,46 +18,46 @@
         <Label x:Name="SeriesLabel" 
                Content="Series Name: " 
                HorizontalAlignment="Left" 
-               Margin="7,3,0,0" 
+               Margin="7,36,0,0" 
                VerticalAlignment="Top" 
                Width="85" 
                Height="26"/>
         <Label x:Name="SeriesShortLabel" 
                Content="Series Short:" 
                HorizontalAlignment="Left" 
-               Margin="7,31,0,0" 
+               Margin="7,64,0,0" 
                VerticalAlignment="Top" 
                Width="85" 
                Height="26"/>
         <Label x:Name="RosterFileLabel" 
                Content="Roster File:" 
                HorizontalAlignment="Left" 
-               Margin="7,61,0,0" 
+               Margin="7,94,0,0" 
                VerticalAlignment="Top" 
                Width="85" 
                Height="26"/>
-       
+
         <Label x:Name="SeriesLogoLabel" 
                Content="Series Logo:" 
                HorizontalAlignment="Left" 
-               Margin="7,86,0,0" 
+               Margin="7,119,0,0" 
                VerticalAlignment="Top" 
                Width="85" 
                Height="26"/>
-        
+
         <Label x:Name="SancBodyLogoLabel" 
                Content="Sanctioning &#xA;Body Logo:" 
                HorizontalAlignment="Left" 
-               Margin="7,117,0,0" 
+               Margin="7,150,0,0" 
                VerticalAlignment="Top"/>
-        
+
         <TextBox x:Name="SeriesNameTextBox"
                  HorizontalAlignment="Left"
                  Height="23"
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="330"
-                 Margin="97,7,0,0"
+                 Margin="97,40,0,0"
                  Text="{Binding Name, Mode=TwoWay}"/>
         <TextBox x:Name="SeriesShortTextBox"
                  HorizontalAlignment="Left"
@@ -65,54 +65,54 @@
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="330"
-                 Margin="97,35,0,0"
+                 Margin="97,68,0,0"
                  Text="{Binding ShortName, Mode=TwoWay}"/>
-        
+
         <TextBox x:Name="RosterFileTextBox"
                  HorizontalAlignment="Left"
                  Height="23"
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="250"
-                 Margin="97,64,0,0"
+                 Margin="97,97,0,0"
                  IsEnabled="False"
                  Text="{Binding RosterFile, Mode=OneWay}"/>
-        
+
         <TextBox x:Name="SeriesLogoTextBox"
                  HorizontalAlignment="Left"
                  Height="23" 
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="250"
-                 Margin="97,92,0,0"
+                 Margin="97,125,0,0"
                  IsEnabled="False"
                  Text="{Binding SeriesLogo, Mode=OneWay}"/>
-        
+
         <TextBox x:Name="SancBodyLogo"
                  HorizontalAlignment="Left"
                  Height="23" 
                  TextWrapping="Wrap" 
                  VerticalAlignment="Top" 
                  Width="250"
-                 Margin="97,136,0,0" 
+                 Margin="97,169,0,0" 
                  IsEnabled="False"
                  Text="{Binding SancLogo, Mode=OneWay}"/>
-        
+
         <Button x:Name="OpenRosterButton"
                 Content="Open"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Width="75" 
-                Margin="352,64,0,0"
+                Margin="352,97,0,0"
                 Height="23"
                 Command="{Binding OpenRosterFileCommand, Mode=OneWay}"/>
-        
+
         <Button x:Name="LoadSeriesLogoButton"
                 Content="Load New"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Width="75"
-                Margin="352,92,0,0"
+                Margin="352,125,0,0"
                 Height="23"
                 Command="{Binding LoadNewSeriesCommand, Mode=OneWay}"/>
 
@@ -121,22 +121,48 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Width="75"
-                Margin="352,136,0,0"
+                Margin="352,169,0,0"
                 Height="23"
                 Command="{Binding LoadNewSancCommand, Mode=OneWay}"/>
         <Button x:Name="SaveSeriesButton"
                 Content="Save Series"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Width="75"
-                Margin="352,197,0,0"
+                Width="110"
+                Margin="317,203,0,0"
                 Command="{Binding SaveSeriesCommand,Mode=OneWay}"
-                CommandParameter="{Binding ElementName=Series_Window}"/>
+                CommandParameter="{Binding ElementName=Series_Window}" Height="29"/>
         <Button x:Name="CancelButton"
                 Content="Cancel"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Width="75"
-                Margin="17,197,0,0"/>
+                Width="109"
+                Margin="17,203,0,0" Height="29"
+                Command="{Binding CancelCommand, Mode=OneWay}"
+                CommandParameter="{Binding ElementName=Series_Window}"/>
+        <Label x:Name="SeriesLabel_Copy" 
+            Content="NR2K3 Root:" 
+            HorizontalAlignment="Left" 
+            Margin="7,10,0,0" 
+            VerticalAlignment="Top" 
+            Width="85" 
+            Height="26"/>
+        <TextBox x:Name="NR2k3DirectoryTextBox"
+            HorizontalAlignment="Left"
+            Height="23"
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
+            Width="250"
+            Margin="97,11,0,0"
+            IsEnabled="False"
+            Text="{Binding NR2K3Dir, Mode=OneWay}"/>
+        <Button x:Name="OpenNR2k3RootButton"
+            Content="Open"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Width="75" 
+            Margin="352,11,0,0"
+            Height="23"
+           Command="{Binding NR2K3RootCommand, Mode=OneWay}"/>
     </Grid>
 </Window>

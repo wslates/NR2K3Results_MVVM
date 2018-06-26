@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" Nullable="false" />
+          <Property Name="Id" Type="integer" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="SeriesName" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
           <Property Name="SeriesShort" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
           <Property Name="RosterFile" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
@@ -29,13 +29,13 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" />
-          <Property Name="SeriesName" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SeriesShort" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="RosterFile" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SeriesLogo" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="SancLogo" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
-          <Property Name="NR2K3Dir" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SeriesName" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SeriesShort" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RosterFile" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SeriesLogo" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="SancLogo" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Name="NR2K3Dir" Type="String" MaxLength="512" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="NR2K3ResultsEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Series" EntityType="Self.Series" />
