@@ -1,0 +1,142 @@
+﻿<Window x:Class="NR2K3Results_MVVM.View.SeriesWindow"
+        x:Name="Series_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:NR2K3Results_MVVM.View"
+        mc:Ignorable="d"
+        Title="Series" Height="271.005" Width="450.079"
+        DataContext="{Binding Path=Series, Source={StaticResource Locator}}" >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding OnCloseCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <Label x:Name="SeriesLabel" 
+               Content="Series Name: " 
+               HorizontalAlignment="Left" 
+               Margin="7,3,0,0" 
+               VerticalAlignment="Top" 
+               Width="85" 
+               Height="26"/>
+        <Label x:Name="SeriesShortLabel" 
+               Content="Series Short:" 
+               HorizontalAlignment="Left" 
+               Margin="7,31,0,0" 
+               VerticalAlignment="Top" 
+               Width="85" 
+               Height="26"/>
+        <Label x:Name="RosterFileLabel" 
+               Content="Roster File:" 
+               HorizontalAlignment="Left" 
+               Margin="7,61,0,0" 
+               VerticalAlignment="Top" 
+               Width="85" 
+               Height="26"/>
+       
+        <Label x:Name="SeriesLogoLabel" 
+               Content="Series Logo:" 
+               HorizontalAlignment="Left" 
+               Margin="7,86,0,0" 
+               VerticalAlignment="Top" 
+               Width="85" 
+               Height="26"/>
+        
+        <Label x:Name="SancBodyLogoLabel" 
+               Content="Sanctioning &#xA;Body Logo:" 
+               HorizontalAlignment="Left" 
+               Margin="7,117,0,0" 
+               VerticalAlignment="Top"/>
+        
+        <TextBox x:Name="SeriesNameTextBox"
+                 HorizontalAlignment="Left"
+                 Height="23"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="330"
+                 Margin="97,7,0,0"
+                 Text="{Binding Name, Mode=TwoWay}"/>
+        <TextBox x:Name="SeriesShortTextBox"
+                 HorizontalAlignment="Left"
+                 Height="23" 
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="330"
+                 Margin="97,35,0,0"
+                 Text="{Binding ShortName, Mode=TwoWay}"/>
+        
+        <TextBox x:Name="RosterFileTextBox"
+                 HorizontalAlignment="Left"
+                 Height="23"
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="250"
+                 Margin="97,64,0,0"
+                 IsEnabled="False"
+                 Text="{Binding RosterFile, Mode=OneWay}"/>
+        
+        <TextBox x:Name="SeriesLogoTextBox"
+                 HorizontalAlignment="Left"
+                 Height="23" 
+                 TextWrapping="Wrap"
+                 VerticalAlignment="Top"
+                 Width="250"
+                 Margin="97,92,0,0"
+                 IsEnabled="False"
+                 Text="{Binding SeriesLogo, Mode=OneWay}"/>
+        
+        <TextBox x:Name="SancBodyLogo"
+                 HorizontalAlignment="Left"
+                 Height="23" 
+                 TextWrapping="Wrap" 
+                 VerticalAlignment="Top" 
+                 Width="250"
+                 Margin="97,136,0,0" 
+                 IsEnabled="False"
+                 Text="{Binding SancLogo, Mode=OneWay}"/>
+        
+        <Button x:Name="OpenRosterButton"
+                Content="Open"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="75" 
+                Margin="352,64,0,0"
+                Height="23"
+                Command="{Binding OpenRosterFileCommand, Mode=OneWay}"/>
+        
+        <Button x:Name="LoadSeriesLogoButton"
+                Content="Load New"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="75"
+                Margin="352,92,0,0"
+                Height="23"
+                Command="{Binding LoadNewSeriesCommand, Mode=OneWay}"/>
+
+        <Button x:Name="LoadSancBodyLogoButton"
+                Content="Load New"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="75"
+                Margin="352,136,0,0"
+                Height="23"
+                Command="{Binding LoadNewSancCommand, Mode=OneWay}"/>
+        <Button x:Name="SaveSeriesButton"
+                Content="Save Series"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="75"
+                Margin="352,197,0,0"
+                Command="{Binding SaveSeriesCommand,Mode=OneWay}"
+                CommandParameter="{Binding ElementName=Series_Window}"/>
+        <Button x:Name="CancelButton"
+                Content="Cancel"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Width="75"
+                Margin="17,197,0,0"/>
+    </Grid>
+</Window>
