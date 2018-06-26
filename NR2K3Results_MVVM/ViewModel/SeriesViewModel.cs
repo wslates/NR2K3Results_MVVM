@@ -15,10 +15,11 @@ namespace NR2K3Results_MVVM.ViewModel
 {
     public class SeriesViewModel:ViewModelBase, ICleanup
     {
-
+        private Series selectedSeries;
         private String RosterFull;
         private String SeriesFull;
         private String SancFull;
+        private NR2k3ResultsEntities context = new NR2k3ResultsEntities();
 
         private String name;
         private String shortName;
@@ -110,31 +111,27 @@ namespace NR2K3Results_MVVM.ViewModel
 
         private void OnCloseCommandAction()
         {
+            context.Dispose();
             Messenger.Default.Unregister(this);
         }
 
         private void ReceiveSeriesData(SendDataToSeriesView obj)
         {
-            Series series;
             if (obj != null)
             {
-                using (var db = new NR2k3ResultsEntities())
-                {
-                    series = db.Series.Where(d => d.SeriesName.Equals(obj.series)).FirstOrDefault();
-                    db.Series.Remove(series);
-                    db.SaveChanges();
-                }
-                Name = series.SeriesName;
-                ShortName = series.SeriesShort;
-                RosterFull = series.RosterFile;
-                RosterFile = series.RosterFile.Split('\\').Last();
-                SeriesFull = series.SeriesLogo;
-                SancFull = series.SancLogo;
-                SeriesLogo = series.SeriesLogo?.Split('\\').Last();
-                SancLogo = series.SancLogo?.Split('\\').Last();
+
+                selectedSeries = context.Series.Where(d => d.SeriesName.Equals(obj.series)).FirstOrDefault();
+                Name = selectedSeries?.SeriesName;
+                ShortName = selectedSeries?.SeriesShort;
+                RosterFull = selectedSeries?.RosterFile;
+                RosterFile = selectedSeries?.RosterFile.Split('\\').Last();
+                SeriesFull = selectedSeries?.SeriesLogo;
+                SancFull = selectedSeries?.SancLogo;
+                SeriesLogo = selectedSeries?.SeriesLogo?.Split('\\').Last();
+                SancLogo = selectedSeries?.SancLogo?.Split('\\').Last();
 
             }
-            
+
         }
 
         public void OpenRosterFileCommandAction()
@@ -214,14 +211,13 @@ namespace NR2K3Results_MVVM.ViewModel
                     SeriesLogo = SeriesFull,
                     SancLogo = SancFull
                 };
-                using (var db = new NR2k3ResultsEntities())
-                {  
-                    db.Series.Add(series);
-                    db.SaveChanges();
-                }
+
+                if (selectedSeries != null) { context.Series.Remove(selectedSeries); }
+                context.Series.Add(series);
+                context.SaveChanges();
+
                 
                 Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
-                Messenger.Default.Unregister(this);
                 window?.Close();
             } 
             
