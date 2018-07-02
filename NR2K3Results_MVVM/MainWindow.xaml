@@ -60,7 +60,8 @@
                  Width="260" 
                  Margin="71,71,0,0" 
                  IsEnabled="False" 
-                 Grid.Column="1"/>
+                 Grid.Column="1"
+                 Text="{Binding ResultFile, Mode=OneWay}"/>
         <TextBox x:Name="RaceTextBox"  
                  HorizontalAlignment="Left" 
                  Height="23" 
@@ -103,7 +104,6 @@
                 Width="65" 
                 Margin="336,71,0,0" 
                 Height="23" 
-                IsEnabled="False" 
                 Grid.Column="1"
                 Command="{Binding ResultFileCommand, Mode=OneWay}"/>
         <Button x:Name="OutputButton" 

@@ -1,19 +1,15 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using NR2K3Results_MVVM.Model;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
-    public class SeriesViewModel:ViewModelBase, ICleanup
+    public class SeriesViewModel:ViewModelBase
     {
         private Series selectedSeries;
         private String RosterFull;
@@ -91,8 +87,7 @@ namespace NR2K3Results_MVVM.ViewModel
             }
             set
             {
-                seriesLogo = value;
-                RaisePropertyChanged();
+                Set(ref seriesLogo, value);
             }
         }
 

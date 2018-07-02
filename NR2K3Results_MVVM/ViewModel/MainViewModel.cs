@@ -2,10 +2,10 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using NR2K3Results_MVVM.Model;
+using NR2K3Results_MVVM.Parsers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 
 namespace NR2K3Results_MVVM.ViewModel
@@ -20,6 +20,10 @@ namespace NR2K3Results_MVVM.ViewModel
     {
         private String selectedSeries;
         private readonly IDataService _dataService;
+        private Track track;
+        private Series series;
+        private string resultFile;
+
         public String SelectedSeries
         {
             get
@@ -28,8 +32,24 @@ namespace NR2K3Results_MVVM.ViewModel
             }
             set
             {
+                using (var db = new NR2K3ResultsEntities())
+                {
+                    series = db.Series.Where(d => d.SeriesName.Equals(value)).FirstOrDefault();
+                }
                 selectedSeries = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public String ResultFile
+        {
+            get
+            {
+                return resultFile;
+            }
+            set
+            {
+                Set(ref resultFile, value);
             }
         }
         public RelayCommand NewSeriesCommand { get; private set; }
@@ -96,6 +116,7 @@ namespace NR2K3Results_MVVM.ViewModel
 
             if (Series.Contains(obj.newSeries))
             {
+               
                 SelectedSeries = obj.newSeries;
             }
             
@@ -144,7 +165,21 @@ namespace NR2K3Results_MVVM.ViewModel
 
         public void ResultFileCommandAction()
         {
-            System.Console.WriteLine("Open Result File");
+            if (selectedSeries!=null)
+            {
+                Microsoft.Win32.OpenFileDialog resultFile = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "HTML Files (*.html)|*.html"
+                };
+
+                if (resultFile.ShowDialog() == true)
+                {
+                    track = TrackParser.Parse(series.NR2K3Dir, resultFile.FileName);
+                    ResultFile = resultFile.FileName.Split('\\').Last();
+                    Console.WriteLine("Track: " + track.name);
+                }
+            }
+            
         }
         public void OutputCommandAction()
         {
