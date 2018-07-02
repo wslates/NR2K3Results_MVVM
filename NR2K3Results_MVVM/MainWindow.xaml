@@ -130,7 +130,10 @@
                   VerticalAlignment="Top" 
                   Width="120" 
                   Margin="71,132,0,0" 
-                  Grid.Column="1"/>
+                  Grid.Column="1"
+                  ItemsSource="{Binding Sessions, Mode=OneWay}"
+                  SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                  SelectedIndex="0"/>
     </Grid>
 
 

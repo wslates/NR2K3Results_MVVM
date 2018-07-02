@@ -2,6 +2,7 @@
 using NR2K3Results_MVVM.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,54 +18,51 @@ namespace NR2K3Results_MVVM.Parsers
                 {"Happy Hour", 2},
                 {"Race", 3}
             };
+        private static readonly string[] sessions = { "Practice", "Qualifying", "Happy Hour", "Race" };
+
+        public static void GetSessions(String filePath, ObservableCollection<String> retSessions)
+        {
+            var doc = new HtmlDocument();
+            doc.Load(@filePath);
+            var tables = doc.DocumentNode.SelectNodes("//table");
+            foreach (var table in tables)
+            {
+                if (table.ChildNodes.Where(d=>d.Name.ToLower().Equals("tr")).Count() > 1)
+                {
+                    retSessions.Add(sessions[tables.IndexOf(table)]);
+                }                
+            }
+        }
 
         public static void Parse(ref List<Driver> drivers, string FilePath, ref string session, ref decimal length)
         {
-            bool[] ranSession = new bool[4];
-
-            //C:\Papyrus\NASCAR Racing 2003 Season\exports_imports\HappyHour.Html
 
             HtmlDocument doc = new HtmlDocument();
             doc.Load(@"C:\Papyrus\NASCAR Racing 2003 Season\exports_imports\Charlotte.html");
 
             var tables = doc.DocumentNode.SelectNodes("//table");
-            var sessions = doc.DocumentNode.SelectNodes("//h3").Where(x => x.InnerText.Contains("Session"));
-            for (int i = 0; i < sessions.Count(); i++)
-            {
-                if (tables[i].SelectNodes("tr").Count() > 1)
-                {
-                    string sess = sessions.ElementAt(i).InnerText.Split(':')[1].Trim();
-                    ranSession[sessionTypes[sess]] = true;
-                }
-            }
 
 
             //parse the results
             List<string> finalResults = new List<string>();
-          
-            if (ranSession[sessionTypes[session]])
-            {
-                foreach (HtmlNode row in tables.ElementAt(sessionTypes[session]).SelectNodes("tr").Skip(1))
-                {
-                    foreach (HtmlNode cell in row.SelectNodes("td"))
-                    {
-                        finalResults.Add(cell.InnerText.Trim());
-                    }
-                }
 
-                if (session.Equals("Race"))
+
+            foreach (HtmlNode row in tables.ElementAt(sessionTypes[session]).SelectNodes("tr").Skip(1))
+            {
+                foreach (HtmlNode cell in row.SelectNodes("td"))
                 {
-                    ParseRace(ref drivers, ref finalResults, ref length);
-                } else
-                {
-                    ParsePracticeQual(ref drivers, ref finalResults, ref length);
+                    finalResults.Add(cell.InnerText.Trim());
                 }
             }
-           
-            
 
-
-    
+            if (session.Equals("Race"))
+            {
+                ParseRace(ref drivers, ref finalResults, ref length);
+            }
+            else
+            {
+                ParsePracticeQual(ref drivers, ref finalResults, ref length);
+            }
         }
 
         private static void ParsePracticeQual (ref List<Driver> drivers, ref List<string> finalResults, ref decimal length)

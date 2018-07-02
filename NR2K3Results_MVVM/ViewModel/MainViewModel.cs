@@ -19,6 +19,7 @@ namespace NR2K3Results_MVVM.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private String selectedSeries;
+        private String selectedSession;
         private readonly IDataService _dataService;
         private Track track;
         private Series series;
@@ -41,6 +42,17 @@ namespace NR2K3Results_MVVM.ViewModel
             }
         }
 
+        public String SelectedSession
+        {
+            get
+            {
+                return selectedSession;
+            } set
+            {
+                Set(ref selectedSession, value);
+            }
+        }
+
         public String ResultFile
         {
             get
@@ -57,8 +69,8 @@ namespace NR2K3Results_MVVM.ViewModel
         public RelayCommand DeleteSeriesCommand { get; private set; }
         public RelayCommand OutputCommand { get; private set; }
         public RelayCommand ResultFileCommand { get; private set; }
-        public RelayCommand NR2k3Command { get; private set; }
         public ObservableCollection<String> Series { get; private set; }
+        public ObservableCollection<String> Sessions { get; private set; }
         /// <summary>
         /// The <see cref="WelcomeTitle" /> property's name.
         /// </summary>
@@ -104,9 +116,9 @@ namespace NR2K3Results_MVVM.ViewModel
             DeleteSeriesCommand = new RelayCommand(DeleteSeriesCommandAction);
             OutputCommand = new RelayCommand(OutputCommandAction);
             ResultFileCommand = new RelayCommand(ResultFileCommandAction);
-            NR2k3Command = new RelayCommand(NR2k3CommandAction);
             Messenger.Default.Register<Model.AddDeleteOrModifySeriesMessage>(this, UpdateSeries);
             Series = new ObservableCollection<String>();
+            Sessions = new ObservableCollection<String>();
             UpdateSeries();
         }
 
@@ -176,7 +188,9 @@ namespace NR2K3Results_MVVM.ViewModel
                 {
                     track = TrackParser.Parse(series.NR2K3Dir, resultFile.FileName);
                     ResultFile = resultFile.FileName.Split('\\').Last();
-                    Console.WriteLine("Track: " + track.name);
+                    Sessions.Clear();
+                    ResultParser.GetSessions(resultFile.FileName, Sessions);
+                    SelectedSession = (Sessions.Count > 0) ? Sessions[0] : null;
                 }
             }
             
@@ -186,10 +200,6 @@ namespace NR2K3Results_MVVM.ViewModel
             System.Console.WriteLine("Output PDF!");
         }
 
-        public void NR2k3CommandAction()
-        {
-            System.Console.WriteLine("NR2k3");
-        }
 
         private void UpdateSeries()
         {
