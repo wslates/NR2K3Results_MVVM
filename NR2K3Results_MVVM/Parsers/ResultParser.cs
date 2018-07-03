@@ -52,6 +52,7 @@ namespace NR2K3Results_MVVM.Parsers
             //fastest time is now last cell of first row
             decimal fastTime = Convert.ToDecimal(table[0].ChildNodes.Where(d => d.Name.Equals("td")).Last().InnerText.Trim());
             decimal prevTime = fastTime;
+
             foreach (var row in table)
             {
                 var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t=>t.InnerText.Trim()).ToList();
@@ -79,29 +80,15 @@ namespace NR2K3Results_MVVM.Parsers
 
                 //set previous time to 0 
                 prevTime = (cells[3].Equals("--")) ? 0 : Convert.ToDecimal(cells[3]);
-                Console.WriteLine(driver);
-            }
-        }
-
-        private static void ParsePracticeQual (ref List<Driver> drivers, ref List<string> finalResults, decimal length)
-        {
-            decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 4)[3]);
-            decimal prevTime = fastTime;
-            for (int i = 0; i < finalResults.Count - 3; i += 4)
-            {
-
-                string[] result = finalResults.GetRange(i, 4).ToArray();
-                DriverResult driverRes = new DriverResult
+                
+                if (drivers.Contains(driver))
                 {
-                    finish = Convert.ToInt16(result[0]),
-                    time = (result[3].Equals("--")) ? 0 : Convert.ToDecimal(result[3]),
-                    timeOffLeader = (result[3].Equals("--")) ? 0 : fastTime - Convert.ToDecimal(result[3]),
-                    timeOffNext = (result[3].Equals("--")) ? 0 : prevTime - Convert.ToDecimal(result[3]),
-                    speed = (result[3].Equals("--")) ? 0 : (length / Convert.ToDecimal(result[3])) * 3600
-                };
-
-
-
+                    // simply update the result if a driver already exists in the list
+                    drivers.ElementAt(drivers.IndexOf(driver)).result = driverResult;
+                } else
+                {
+                    drivers.Add(driver);
+                }
 
             }
 

@@ -8,11 +8,11 @@ namespace NR2K3Results_MVVM.Parsers
 {
     class CarFileParser
     {
-        public static List<Driver> GetRosterDrivers(ref String CarsFilePath, ref String RosterFilePath)
+        public static List<Driver> GetRosterDrivers(String RosterFilePath)
         {
             string[] lines = System.IO.File.ReadAllLines(RosterFilePath);
             List<Driver> drivers = new List<Driver>();
-
+            String CarsFilePath = System.IO.Directory.GetParent(RosterFilePath).ToString();
             foreach (string line in lines)
             {
                 if (line[0] == '+')
@@ -25,11 +25,8 @@ namespace NR2K3Results_MVVM.Parsers
                     {
                         drivers.Add(driver);
                     }
-                }
-                
-                
+                }               
             }
-
             return drivers;
         }
            

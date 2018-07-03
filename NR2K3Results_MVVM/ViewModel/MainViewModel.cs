@@ -40,8 +40,8 @@ namespace NR2K3Results_MVVM.ViewModel
                 {
                     series = db.Series.Where(d => d.SeriesName.Equals(value)).FirstOrDefault();
                 }
-                selectedSeries = value;
-                RaisePropertyChanged();
+                Set(ref selectedSeries, value);
+               
             }
         }
 
@@ -201,10 +201,15 @@ namespace NR2K3Results_MVVM.ViewModel
         }
         public void OutputCommandAction()
         {
-            if (SelectedSeries!=null)
+            if (SelectedSeries != null && resultFilePath != null && track != null)
             {
-                drivers = new List<Driver>();
+                drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
                 ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, track.length);
+                drivers.Sort();
+                foreach (Driver driver in drivers)
+                {
+                    Console.WriteLine(driver);
+                }
             }
             System.Console.WriteLine("Output PDF!");
         }
