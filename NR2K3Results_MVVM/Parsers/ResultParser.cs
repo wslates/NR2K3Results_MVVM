@@ -34,9 +34,10 @@ namespace NR2K3Results_MVVM.Parsers
             doc.Load(@filePath);
 
             var table = doc.DocumentNode.SelectNodes("//table").ElementAt(sessions.IndexOf(session)).ChildNodes.Where(d => d.Name.Equals("tr")).ToList();
+
             if (session.Equals("Race"))
             {
-
+                ParseRace(ref drivers, table, length);
             }
             else
             {
@@ -56,7 +57,7 @@ namespace NR2K3Results_MVVM.Parsers
             foreach (var row in table)
             {
                 var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t=>t.InnerText.Trim()).ToList();
-
+             
                 //note: "--" for time means that driver did not make a lap in the session, thus time is set to 0
                 DriverResult driverResult = new DriverResult
                 {
@@ -96,51 +97,49 @@ namespace NR2K3Results_MVVM.Parsers
             drivers = drivers.Where(d => d.result != null).ToList();
         }
 
-        private static void ParseRace(ref List<Driver> drivers, ref List<string> finalResults, decimal length)
+        private static void ParseRace (ref List<Driver> drivers, List<HtmlNode> table, decimal length)
         {
-            //decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 9)[4]);
-            for (int i = 0; i < finalResults.Count - 8; i += 9)
+            //remove first row of table with column names
+            table.RemoveAt(0);
+
+            foreach (var row in table)
             {
+                var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t => t.InnerText.Trim()).ToList();
 
-                string[] result = finalResults.GetRange(i, 9).ToArray();
-
-                if(result[6].Contains('*'))
+                DriverResult driverResult = new DriverResult
                 {
-                    result[6] = result[6].Replace("*", String.Empty);
-                }
-                DriverResult driverRes = new DriverResult
-                {
-                    finish = Convert.ToInt16(result[0]),
-                    start = Convert.ToInt16(result[1]),
-                    timeOffLeader = (result[4].Contains('L')) ? .000001m : Convert.ToDecimal(result[4]),
-                    lapsDown = (result[4].Contains('L')) ? result[4].Replace("L", String.Empty) : String.Empty,
-                    laps = Convert.ToInt16(result[5]),
-                    lapsLed = Convert.ToInt16(result[6]),
-                    status = result[8]
+                    finish = Convert.ToInt16(cells[0]),
+                    start = Convert.ToInt16(cells[1]),
+                    timeOffLeader = (cells[4].Contains('L')) ? 0 : Convert.ToDecimal(cells[4]),
+                    lapsDown = (cells[4].Contains('L')) ? Convert.ToInt16(cells[4].Replace("L", String.Empty)):0,
+                    laps = Convert.ToInt16(cells[5]),
+                    lapsLed = (cells[6].Contains('*')) ? Convert.ToInt16(cells[6].Replace("*", String.Empty)) : Convert.ToInt16(cells[6]),
+                    status = cells[8]
                 };
-
-                string[] name = result[2].Split(' ');
 
                 Driver driver = new Driver
                 {
-                    number = result[2],
-                    firstName = result[3][0].ToString(),
-                    lastName = result[3].Substring(2, result[3].Length - 2),
-                    result = driverRes
+                    number = cells[2],
+                    firstName = cells[3][0].ToString(),
+                    lastName = cells[3].Substring(2, cells[3].Length - 2),
+                    result = driverResult
                 };
 
                 if (drivers.Contains(driver))
                 {
-                    drivers[drivers.IndexOf(driver)].result = driverRes;
+                    // simply update the result if a driver already exists in the list
+                    drivers.ElementAt(drivers.IndexOf(driver)).result = driverResult;
+                }
+                else
+                {
+                    drivers.Add(driver);
                 }
 
+                
             }
-
             //in case some drivers were in the roster but not in the race, remove them
             drivers = drivers.Where(d => d.result != null).ToList();
         }
-
-
     }
 }
     

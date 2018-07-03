@@ -62,9 +62,9 @@ namespace NR2K3Results_MVVM.Model
             if (GetFinish() == 1)
             {
                 return "---.---";
-            }  else if (result.timeOffLeader == .000001m)
+            }  else if (result.lapsDown!=0)
             {
-                return result.lapsDown;
+                return result.lapsDown.ToString() + "L";
             }
             return Decimal.Round(result.timeOffLeader, 3).ToString();
         }
@@ -83,6 +83,8 @@ namespace NR2K3Results_MVVM.Model
         }
         public override string ToString()
         {
+            
+            string timeOff = (result.lapsDown != 0) ? result.timeOffLeader.ToString() : result.lapsDown.ToString();
             return  "#" + number + 
                     "; " + firstName + " " + lastName + 
                     "; " + sponsor + 

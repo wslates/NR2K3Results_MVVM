@@ -11,6 +11,6 @@
         public int lapsLed;
         public int laps;
         public string status;
-        public string lapsDown;
+        public int lapsDown;
     }
 }
