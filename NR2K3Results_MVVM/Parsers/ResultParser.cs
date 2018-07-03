@@ -11,14 +11,7 @@ namespace NR2K3Results_MVVM.Parsers
 {
     class ResultParser
     {
-        private static Dictionary<string, int> sessionTypes = new Dictionary<string, int>()
-            {
-                {"Practice", 0},
-                {"Qualifying", 1},
-                {"Happy Hour", 2},
-                {"Race", 3}
-            };
-        private static readonly string[] sessions = { "Practice", "Qualifying", "Happy Hour", "Race" };
+        private static readonly List<String> sessions = new List<string> { "Practice", "Qualifying", "Happy Hour", "Race" };
 
         public static void GetSessions(String filePath, ObservableCollection<String> retSessions)
         {
@@ -34,38 +27,63 @@ namespace NR2K3Results_MVVM.Parsers
             }
         }
 
-        public static void Parse(ref List<Driver> drivers, string FilePath, ref string session, ref decimal length)
+        public static void Parse(ref List<Driver> drivers, string filePath, string session, decimal length)
         {
 
             HtmlDocument doc = new HtmlDocument();
-            doc.Load(@"C:\Papyrus\NASCAR Racing 2003 Season\exports_imports\Charlotte.html");
+            doc.Load(@filePath);
 
-            var tables = doc.DocumentNode.SelectNodes("//table");
-
-
-            //parse the results
-            List<string> finalResults = new List<string>();
-
-
-            foreach (HtmlNode row in tables.ElementAt(sessionTypes[session]).SelectNodes("tr").Skip(1))
-            {
-                foreach (HtmlNode cell in row.SelectNodes("td"))
-                {
-                    finalResults.Add(cell.InnerText.Trim());
-                }
-            }
-
+            var table = doc.DocumentNode.SelectNodes("//table").ElementAt(sessions.IndexOf(session)).ChildNodes.Where(d => d.Name.Equals("tr")).ToList();
             if (session.Equals("Race"))
             {
-                ParseRace(ref drivers, ref finalResults, ref length);
+
             }
             else
             {
-                ParsePracticeQual(ref drivers, ref finalResults, ref length);
+                ParsePracQual(ref drivers, table, length);
             }
         }
 
-        private static void ParsePracticeQual (ref List<Driver> drivers, ref List<string> finalResults, ref decimal length)
+        private static void ParsePracQual (ref List<Driver> drivers, List<HtmlNode> table, decimal length)
+        {
+            //remove first row of table with column names
+            table.RemoveAt(0);
+
+            //fastest time is now last cell of first row
+            decimal fastTime = Convert.ToDecimal(table[0].ChildNodes.Where(d => d.Name.Equals("td")).Last().InnerText.Trim());
+            decimal prevTime = fastTime;
+            foreach (var row in table)
+            {
+                var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t=>t.InnerText.Trim()).ToList();
+
+                //note: "--" for time means that driver did not make a lap in the session, thus time is set to 0
+                DriverResult driverResult = new DriverResult
+                {
+                    finish = Convert.ToInt16(cells[0]),
+                    time = (cells[3].Equals("--")) ? 0 : Convert.ToDecimal(cells[3]),
+                    timeOffLeader = (cells[3].Equals("--")) ? 0 : fastTime - Convert.ToDecimal(cells[3]),
+                    timeOffNext = (cells[3].Equals("--")) ? 0 : prevTime - Convert.ToDecimal(cells[3]),
+                    speed = (cells[3].Equals("--")) ? 0 : (length / Convert.ToDecimal(cells[3])) * 3600
+
+                };
+
+
+
+                Driver driver = new Driver
+                {
+                    number = cells[1],
+                    firstName = cells[2][0].ToString(),
+                    lastName = cells[2].Substring(2, cells[2].Length - 2),
+                    result = driverResult
+                };
+
+                //set previous time to 0 
+                prevTime = (cells[3].Equals("--")) ? 0 : Convert.ToDecimal(cells[3]);
+                Console.WriteLine(driver);
+            }
+        }
+
+        private static void ParsePracticeQual (ref List<Driver> drivers, ref List<string> finalResults, decimal length)
         {
             decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 4)[3]);
             decimal prevTime = fastTime;
@@ -83,26 +101,6 @@ namespace NR2K3Results_MVVM.Parsers
                 };
 
 
-                string[] name = result[2].Split(' ');
-
-                Driver driver = new Driver
-                {
-                    number = result[1],
-                    firstName = result[2][0].ToString(),
-                    lastName = result[2].Substring(2, result[2].Length - 2),
-                    result = driverRes
-                };
-
-                prevTime = (result[3].Equals("--")) ? 0 : Convert.ToDecimal(result[3]);
-
-
-                if (drivers.Contains(driver))
-                {
-                    drivers[drivers.IndexOf(driver)].result = driverRes;
-                } else
-                {
-                    
-                }
 
 
             }
@@ -111,7 +109,7 @@ namespace NR2K3Results_MVVM.Parsers
             drivers = drivers.Where(d => d.result != null).ToList();
         }
 
-        private static void ParseRace(ref List<Driver> drivers, ref List<string> finalResults, ref decimal length)
+        private static void ParseRace(ref List<Driver> drivers, ref List<string> finalResults, decimal length)
         {
             //decimal fastTime = Convert.ToDecimal(finalResults.GetRange(0, 9)[4]);
             for (int i = 0; i < finalResults.Count - 8; i += 9)

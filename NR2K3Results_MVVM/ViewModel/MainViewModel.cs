@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 using NR2K3Results_MVVM.Model;
 using NR2K3Results_MVVM.Parsers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -20,10 +21,12 @@ namespace NR2K3Results_MVVM.ViewModel
     {
         private String selectedSeries;
         private String selectedSession;
+        private String resultFilePath;
         private readonly IDataService _dataService;
         private Track track;
         private Series series;
         private string resultFile;
+        private List<Driver> drivers;
 
         public String SelectedSeries
         {
@@ -187,6 +190,7 @@ namespace NR2K3Results_MVVM.ViewModel
                 if (resultFile.ShowDialog() == true)
                 {
                     track = TrackParser.Parse(series.NR2K3Dir, resultFile.FileName);
+                    resultFilePath = resultFile.FileName;
                     ResultFile = resultFile.FileName.Split('\\').Last();
                     Sessions.Clear();
                     ResultParser.GetSessions(resultFile.FileName, Sessions);
@@ -197,6 +201,11 @@ namespace NR2K3Results_MVVM.ViewModel
         }
         public void OutputCommandAction()
         {
+            if (SelectedSeries!=null)
+            {
+                drivers = new List<Driver>();
+                ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, track.length);
+            }
             System.Console.WriteLine("Output PDF!");
         }
 
