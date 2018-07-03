@@ -69,7 +69,8 @@
                  VerticalAlignment="Top" 
                  Width="330" 
                  Margin="71,99,0,0" 
-                 Grid.Column="1"/>
+                 Grid.Column="1"
+                 Text="{Binding RaceName, Mode=TwoWay}"/>
         <Button x:Name="NewSeriesButton" 
                 Content="Add New Series" 
                 HorizontalAlignment="Left" 

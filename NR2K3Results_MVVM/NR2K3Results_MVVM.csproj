@@ -129,6 +129,9 @@
     <Compile Include="Parsers\CarFileParser.cs" />
     <Compile Include="Parsers\ResultParser.cs" />
     <Compile Include="Parsers\TrackParser.cs" />
+    <Compile Include="PDFGeneration\PracticePDFGenerators.cs" />
+    <Compile Include="PDFGeneration\RacePDFGenerator.cs" />
+    <Compile Include="PDFGeneration\SessionTypes.cs" />
     <Compile Include="Series.cs">
       <DependentUpon>NR2K3ResultsModel.tt</DependentUpon>
     </Compile>

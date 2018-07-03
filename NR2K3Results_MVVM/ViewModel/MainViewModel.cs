@@ -22,6 +22,7 @@ namespace NR2K3Results_MVVM.ViewModel
         private String selectedSeries;
         private String selectedSession;
         private String resultFilePath;
+        private String raceName;
         private readonly IDataService _dataService;
         private Track track;
         private Series series;
@@ -65,6 +66,18 @@ namespace NR2K3Results_MVVM.ViewModel
             set
             {
                 Set(ref resultFile, value);
+            }
+        }
+
+        public String RaceName
+        {
+            get
+            {
+                return raceName;
+            }
+            set
+            {
+                Set(ref raceName, value);
             }
         }
         public RelayCommand NewSeriesCommand { get; private set; }
@@ -184,7 +197,8 @@ namespace NR2K3Results_MVVM.ViewModel
             {
                 Microsoft.Win32.OpenFileDialog resultFile = new Microsoft.Win32.OpenFileDialog
                 {
-                    Filter = "HTML Files (*.html)|*.html"
+                    Filter = "HTML Files (*.html)|*.html",
+                    InitialDirectory = (System.IO.Directory.Exists((series.NR2K3Dir +"\\exports_imports"))) ? series.NR2K3Dir + "\\exports_imports" : "C:\\"
                 };
 
                 if (resultFile.ShowDialog() == true)
@@ -206,12 +220,14 @@ namespace NR2K3Results_MVVM.ViewModel
                 drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
                 ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, track.length);
                 drivers.Sort();
-                foreach (Driver driver in drivers)
+                if (selectedSession.Equals("Race"))
                 {
-                    Console.WriteLine(driver);
+                    
+                } else
+                {
+                    PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, series, selectedSession, RaceName, track);
                 }
             }
-            System.Console.WriteLine("Output PDF!");
         }
 
 
