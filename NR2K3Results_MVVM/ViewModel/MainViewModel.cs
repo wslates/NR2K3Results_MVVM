@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Ookii.Dialogs;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
@@ -154,7 +155,7 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             View.SeriesWindow window = new View.SeriesWindow();
             window.ShowDialog();
-            
+            window = null;
         }
 
         public void EditSeriesCommandAction()
@@ -195,6 +196,8 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             if (selectedSeries!=null)
             {
+                
+                
                 Microsoft.Win32.OpenFileDialog resultFile = new Microsoft.Win32.OpenFileDialog
                 {
                     Filter = "HTML Files (*.html)|*.html",

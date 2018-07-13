@@ -6,6 +6,7 @@ using NR2K3Results_MVVM.Model;
 using System;
 using System.Linq;
 using System.Windows;
+using Ookii.Dialogs;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
@@ -137,16 +138,11 @@ namespace NR2K3Results_MVVM.ViewModel
 
         private void NR2K3RootCommandAction()
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog
-            {
-                InitialDirectory = "C:\\",
-                IsFolderPicker = true
-            };
+            Ookii.Dialogs.Wpf.VistaFolderBrowserDialog diag = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok && !String.IsNullOrWhiteSpace(dialog.FileName))
+            if (diag.ShowDialog() == true)
             {
-                NR2K3Dir = dialog.FileName;
-                
+                NR2K3Dir = diag.SelectedPath;               
             }
         }
 
@@ -154,6 +150,7 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             context.Dispose();
             Messenger.Default.Unregister(this);
+           
         }
 
         private void ReceiveSeriesData(SendDataToSeriesView obj)
