@@ -60,7 +60,8 @@
                  Width="260" 
                  Margin="71,71,0,0" 
                  IsEnabled="False" 
-                 Grid.Column="1"/>
+                 Grid.Column="1"
+                 Text="{Binding ResultFile, Mode=OneWay}"/>
         <TextBox x:Name="RaceTextBox"  
                  HorizontalAlignment="Left" 
                  Height="23" 
@@ -68,7 +69,8 @@
                  VerticalAlignment="Top" 
                  Width="330" 
                  Margin="71,99,0,0" 
-                 Grid.Column="1"/>
+                 Grid.Column="1"
+                 Text="{Binding RaceName, Mode=TwoWay}"/>
         <Button x:Name="NewSeriesButton" 
                 Content="Add New Series" 
                 HorizontalAlignment="Left" 
@@ -103,7 +105,6 @@
                 Width="65" 
                 Margin="336,71,0,0" 
                 Height="23" 
-                IsEnabled="False" 
                 Grid.Column="1"
                 Command="{Binding ResultFileCommand, Mode=OneWay}"/>
         <Button x:Name="OutputButton" 
@@ -130,7 +131,10 @@
                   VerticalAlignment="Top" 
                   Width="120" 
                   Margin="71,132,0,0" 
-                  Grid.Column="1"/>
+                  Grid.Column="1"
+                  ItemsSource="{Binding Sessions, Mode=OneWay}"
+                  SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                  SelectedIndex="0"/>
     </Grid>
 
 

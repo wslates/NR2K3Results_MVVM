@@ -2,11 +2,13 @@
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using NR2K3Results_MVVM.Model;
+using NR2K3Results_MVVM.Parsers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
+using Ookii.Dialogs;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
@@ -19,7 +21,15 @@ namespace NR2K3Results_MVVM.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private String selectedSeries;
+        private String selectedSession;
+        private String resultFilePath;
+        private String raceName;
         private readonly IDataService _dataService;
+        private Race track;
+        private Series series;
+        private string resultFile;
+        private List<Driver> drivers;
+
         public String SelectedSeries
         {
             get
@@ -28,8 +38,47 @@ namespace NR2K3Results_MVVM.ViewModel
             }
             set
             {
-                selectedSeries = value;
-                RaisePropertyChanged();
+                using (var db = new NR2K3ResultsEntities())
+                {
+                    series = db.Series.Where(d => d.SeriesName.Equals(value)).FirstOrDefault();
+                }
+                Set(ref selectedSeries, value);
+               
+            }
+        }
+
+        public String SelectedSession
+        {
+            get
+            {
+                return selectedSession;
+            } set
+            {
+                Set(ref selectedSession, value);
+            }
+        }
+
+        public String ResultFile
+        {
+            get
+            {
+                return resultFile;
+            }
+            set
+            {
+                Set(ref resultFile, value);
+            }
+        }
+
+        public String RaceName
+        {
+            get
+            {
+                return raceName;
+            }
+            set
+            {
+                Set(ref raceName, value);
             }
         }
         public RelayCommand NewSeriesCommand { get; private set; }
@@ -37,8 +86,8 @@ namespace NR2K3Results_MVVM.ViewModel
         public RelayCommand DeleteSeriesCommand { get; private set; }
         public RelayCommand OutputCommand { get; private set; }
         public RelayCommand ResultFileCommand { get; private set; }
-        public RelayCommand NR2k3Command { get; private set; }
         public ObservableCollection<String> Series { get; private set; }
+        public ObservableCollection<String> Sessions { get; private set; }
         /// <summary>
         /// The <see cref="WelcomeTitle" /> property's name.
         /// </summary>
@@ -84,9 +133,9 @@ namespace NR2K3Results_MVVM.ViewModel
             DeleteSeriesCommand = new RelayCommand(DeleteSeriesCommandAction);
             OutputCommand = new RelayCommand(OutputCommandAction);
             ResultFileCommand = new RelayCommand(ResultFileCommandAction);
-            NR2k3Command = new RelayCommand(NR2k3CommandAction);
             Messenger.Default.Register<Model.AddDeleteOrModifySeriesMessage>(this, UpdateSeries);
             Series = new ObservableCollection<String>();
+            Sessions = new ObservableCollection<String>();
             UpdateSeries();
         }
 
@@ -96,6 +145,7 @@ namespace NR2K3Results_MVVM.ViewModel
 
             if (Series.Contains(obj.newSeries))
             {
+               
                 SelectedSeries = obj.newSeries;
             }
             
@@ -105,7 +155,7 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             View.SeriesWindow window = new View.SeriesWindow();
             window.ShowDialog();
-            
+            window = null;
         }
 
         public void EditSeriesCommandAction()
@@ -144,17 +194,45 @@ namespace NR2K3Results_MVVM.ViewModel
 
         public void ResultFileCommandAction()
         {
-            System.Console.WriteLine("Open Result File");
+            if (selectedSeries!=null)
+            {
+                
+                
+                Microsoft.Win32.OpenFileDialog resultFile = new Microsoft.Win32.OpenFileDialog
+                {
+                    Filter = "HTML Files (*.html)|*.html",
+                    InitialDirectory = (System.IO.Directory.Exists((series.NR2K3Dir +"\\exports_imports"))) ? series.NR2K3Dir + "\\exports_imports" : "C:\\"
+                };
+
+                if (resultFile.ShowDialog() == true)
+                {
+                    track = TrackParser.Parse(series.NR2K3Dir, resultFile.FileName);
+                    resultFilePath = resultFile.FileName;
+                    ResultFile = resultFile.FileName.Split('\\').Last();
+                    Sessions.Clear();
+                    ResultParser.GetSessions(resultFile.FileName, Sessions);
+                    SelectedSession = (Sessions.Count > 0) ? Sessions[0] : null;
+                }
+            }
+            
         }
         public void OutputCommandAction()
         {
-            System.Console.WriteLine("Output PDF!");
+            if (SelectedSeries != null && resultFilePath != null && track != null)
+            {
+                drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
+                ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
+                drivers.Sort();
+                if (selectedSession.Equals("Race"))
+                {
+                    PDFGeneration.RacePDFGenerator.OutputPDF(drivers, series, RaceName, track);
+                } else
+                {
+                    PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, series, selectedSession, RaceName, track);
+                }
+            }
         }
 
-        public void NR2k3CommandAction()
-        {
-            System.Console.WriteLine("NR2k3");
-        }
 
         private void UpdateSeries()
         {
