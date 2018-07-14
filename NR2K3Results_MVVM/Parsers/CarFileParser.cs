@@ -1,6 +1,7 @@
 ﻿using NR2K3Results_MVVM.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 
@@ -34,11 +35,11 @@ namespace NR2K3Results_MVVM.Parsers
         private static Driver OpenCarFile(string path)
         {
             Driver driver = new Driver();
-            //only need 63 of the 3433 lines
-            var lines = System.IO.File.ReadLines(path).Take(63);
 
+            StreamReader file = new StreamReader(path);
+            string line;
             //parses data by splitting at equals sign, getting rid of variable name
-            foreach (string line in lines)
+            while ((line = file.ReadLine()) != null)
             {
                 if (line.Contains("car_number"))
                 {
@@ -55,6 +56,7 @@ namespace NR2K3Results_MVVM.Parsers
                 } else if (line.Contains("team"))
                 {
                     driver.team = line.Split('=')[1];
+                    break;
                 }  
             }
             return driver;

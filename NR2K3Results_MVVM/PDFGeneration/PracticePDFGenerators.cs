@@ -28,7 +28,7 @@ namespace NR2K3Results_MVVM.PDFGeneration
             FileStream fs = null;
 
 
-            fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
+            fs = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
             PdfWriter write = PdfWriter.GetInstance(document, fs);
             document.Open();
 
