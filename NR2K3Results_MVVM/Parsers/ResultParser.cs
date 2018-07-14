@@ -74,23 +74,23 @@ namespace NR2K3Results_MVVM.Parsers
         {
             //remove first row of table with column names
             table.RemoveAt(0);
-
+            
             //fastest time is now last cell of first row
-            decimal fastTime = Convert.ToDecimal(table[0].ChildNodes.Where(d => d.Name.Equals("td")).Last().InnerText.Trim());
-            decimal prevTime = fastTime;
+            TimeSpan fastTime = ParseTime(table[0].ChildNodes.Where(d => d.Name.Equals("td")).Last().InnerText.Trim());
+            TimeSpan prevTime = fastTime;
 
             foreach (var row in table)
             {
                 var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t=>t.InnerText.Trim()).ToList();
-             
+                TimeSpan thisTime = (cells[3].Equals("--")) ? new TimeSpan() : ParseTime(cells[3]);
                 //note: "--" for time means that driver did not make a lap in the session, thus time is set to 0
                 DriverResult driverResult = new DriverResult
                 {
                     finish = Convert.ToInt16(cells[0]),
-                    time = (cells[3].Equals("--")) ? 0 : Convert.ToDecimal(cells[3]),
-                    timeOffLeader = (cells[3].Equals("--")) ? 0 : fastTime - Convert.ToDecimal(cells[3]),
-                    timeOffNext = (cells[3].Equals("--")) ? 0 : prevTime - Convert.ToDecimal(cells[3]),
-                    speed = (cells[3].Equals("--")) ? 0 : (length / Convert.ToDecimal(cells[3])) * 3600
+                    time = thisTime,
+                    timeOffLeader = (cells[3].Equals("--")) ? new TimeSpan(): thisTime.Subtract(fastTime),
+                    timeOffNext = (cells[3].Equals("--")) ? new TimeSpan() : thisTime.Subtract(prevTime),
+                    speed = (cells[3].Equals("--")) ? 0 : (length / (decimal)thisTime.TotalMilliseconds) * 1000 * 3600
 
                 };
 
@@ -103,9 +103,10 @@ namespace NR2K3Results_MVVM.Parsers
                     lastName = cells[2].Substring(2, cells[2].Length - 2),
                     result = driverResult
                 };
+                
 
                 //set previous time to 0 
-                prevTime = (cells[3].Equals("--")) ? 0 : Convert.ToDecimal(cells[3]);
+                prevTime = (cells[3].Equals("--")) ? new TimeSpan() : thisTime;
                 
                 if (drivers.Contains(driver))
                 {
@@ -136,7 +137,7 @@ namespace NR2K3Results_MVVM.Parsers
                 {
                     finish = Convert.ToInt16(cells[0]),
                     start = Convert.ToInt16(cells[1]),
-                    timeOffLeader = (cells[4].Contains('L')) ? 0 : Convert.ToDecimal(cells[4]),
+                    timeOffLeader = (cells[4].Contains('L')) ? new TimeSpan() : ParseTime(cells[4]),
                     lapsDown = (cells[4].Contains('L')) ? Convert.ToInt16(cells[4].Replace("L", String.Empty)):0,
                     laps = Convert.ToInt16(cells[5]),
                     lapsLed = (cells[6].Contains('*')) ? Convert.ToInt16(cells[6].Replace("*", String.Empty)) : Convert.ToInt16(cells[6]),
@@ -150,6 +151,7 @@ namespace NR2K3Results_MVVM.Parsers
                     lastName = cells[3].Substring(2, cells[3].Length - 2),
                     result = driverResult
                 };
+                Console.WriteLine(driver.result.timeOffLeader.TotalSeconds);
 
                 if (drivers.Contains(driver))
                 {
@@ -164,6 +166,23 @@ namespace NR2K3Results_MVVM.Parsers
             }
             //in case some drivers were in the roster but not in the race, remove them
             drivers = drivers.Where(d => d.result != null).ToList();
+            
+        }
+
+        private static TimeSpan ParseTime(string time)
+        {
+            int minutes = 0;
+            time = time.Replace("-", String.Empty);
+            var data = time.Split('.');
+
+            if (time.Contains(":"))
+            {
+                minutes = Convert.ToInt16(time.Split(':')[0]);
+                data = time.Split(':')[1].Split('.');
+            }
+            
+            
+            return new TimeSpan(0, 0, minutes, Convert.ToInt16(data[0]), Convert.ToInt16(data[1]));
             
         }
     }

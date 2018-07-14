@@ -49,16 +49,33 @@ namespace NR2K3Results_MVVM.Model
 
         public string GetSpeed()
         {
-            return Decimal.Round(result.speed, 3).ToString();
+            return String.Format("{0:0.000}", result.speed);
+        }
+        public void SetTime(TimeSpan time)
+        {
+            result.time = time;
+        }
+
+        public void SetTimeOffLeader(TimeSpan time)
+        {
+            result.timeOffLeader = time;
+        }
+
+        public void SetTimeOffNext(TimeSpan time)
+        {
+            result.timeOffNext = time;
         }
 
         public string GetTime()
         {
-            return Decimal.Round(result.time, 3).ToString();
+            
+            return String.Format("{0:0.000}", result.time.TotalSeconds);
+            
         }
 
         public string GetOffLeader()
         {
+            
             if (GetFinish() == 1)
             {
                 return "---.---";
@@ -66,7 +83,12 @@ namespace NR2K3Results_MVVM.Model
             {
                 return result.lapsDown.ToString() + "L";
             }
-            return Decimal.Round(result.timeOffLeader, 3).ToString();
+
+            StringBuilder builder = new StringBuilder();
+            builder.Append("-");
+            builder.Append(String.Format("{0:0.000}", result.timeOffLeader.TotalSeconds));
+           
+            return builder.ToString();
         }
 
         public string GetOffNext()
@@ -74,12 +96,15 @@ namespace NR2K3Results_MVVM.Model
             if (GetFinish() == 1)
             {
                 return "---.---";
-            } else if(result.timeOffNext == 0)
-            {
-                return "-" + Decimal.Round(result.timeOffNext, 3).ToString();
             }
 
-            return Decimal.Round(result.timeOffNext, 3).ToString();
+            StringBuilder builder = new StringBuilder();
+            builder.Append("-");
+            
+            builder.Append(String.Format("{0:0.000}", result.timeOffNext.TotalSeconds));
+
+            return builder.ToString();
+
         }
         public String GetName()
         {
