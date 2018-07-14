@@ -17,77 +17,73 @@ namespace NR2K3Results_MVVM.PDFGeneration
         private static Random rand = new Random();
 
 
-        public static void OutputPDF(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track)
+        public static void OutputPDF(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track, string saveFile)
         {
-            HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
+            HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track, saveFile);
         }
 
-        private static void HappyHourPracticePDFGen(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track)
+        private static void HappyHourPracticePDFGen(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track, string saveFile)
         {
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;
-           
-            try
+
+
+            fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
+            PdfWriter write = PdfWriter.GetInstance(document, fs);
+            document.Open();
+
+            if (!String.IsNullOrEmpty(series.SeriesLogo) && !String.IsNullOrWhiteSpace(series.SeriesLogo))
             {
-                fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
-                PdfWriter write = PdfWriter.GetInstance(document, fs);
-                document.Open();
+                Image img = Image.GetInstance(new Uri(series.SeriesLogo));
+                img.ScaleToFit(125f, 125f);
+                img.SetAbsolutePosition(20f, document.PageSize.Height - img.ScaledHeight - 20f);
+                img.Alignment = Image.TEXTWRAP;
+                document.Add(img);
+            }
 
-                if (!String.IsNullOrEmpty(series.SeriesLogo) && !String.IsNullOrWhiteSpace(series.SeriesLogo))
-                {
-                    Image img = Image.GetInstance(new Uri(series.SeriesLogo));
-                    img.ScaleToFit(125f, 125f);
-                    img.SetAbsolutePosition(20f, document.PageSize.Height - img.ScaledHeight - 20f);
-                    img.Alignment = Image.TEXTWRAP;
-                    document.Add(img);
-                }
-
-                if (!String.IsNullOrEmpty(series.SancLogo) && !String.IsNullOrWhiteSpace(series.SancLogo))
-                {
-                    Image img = Image.GetInstance(new Uri(series.SancLogo));
-                    img.ScaleToFit(125f, 125f);
-                    img.SetAbsolutePosition(document.PageSize.Width - img.ScaledWidth - 20f, document.PageSize.Height - img.ScaledHeight - 20f);
-                    img.Alignment = Image.TEXTWRAP;
-                    document.Add(img);
-                }
-
-                //build title
-                StringBuilder title = new StringBuilder();
-                title.Append(series.SeriesShort);
-                title.AppendLine(" " + selectedSession);
-                title.AppendLine(track.name);
-                if (!String.IsNullOrEmpty(raceName) && !String.IsNullOrWhiteSpace(raceName)) title.AppendLine(raceName);
-
-                //title
-                Paragraph session = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 14, Font.BOLD))
-                {
-                    Alignment = Element.ALIGN_CENTER,
-                    Leading = 17,
-                    SpacingAfter = (String.IsNullOrEmpty(raceName) || String.IsNullOrWhiteSpace(raceName)) ? 47 : 30
-                };
-                document.Add(session);
-                
-                
-                title = new StringBuilder();
-                title.Append("Provided by ");
-                title.Append(series.SeriesName);
-                title.Append(" Statistics");
-                Paragraph providedBy = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.ITALIC))
-                {
-                    SpacingAfter = 5f,
-                    Alignment = Element.ALIGN_CENTER
-                };
-                document.Add(providedBy);
-               
-
-                document.Add(GenerateTopRow(ref SessionData.PRACTICECOLUMNWIDTHS, ref SessionData.PRACTICECOLUMNS));
-
-                document.Add(GenerateDriverRows(drivers, ref SessionData.PRACTICECOLUMNWIDTHS));
-                document.Close();
-            } catch (IOException e)
+            if (!String.IsNullOrEmpty(series.SancLogo) && !String.IsNullOrWhiteSpace(series.SancLogo))
             {
-                return;
-            } 
+                Image img = Image.GetInstance(new Uri(series.SancLogo));
+                img.ScaleToFit(125f, 125f);
+                img.SetAbsolutePosition(document.PageSize.Width - img.ScaledWidth - 20f, document.PageSize.Height - img.ScaledHeight - 20f);
+                img.Alignment = Image.TEXTWRAP;
+                document.Add(img);
+            }
+
+            //build title
+            StringBuilder title = new StringBuilder();
+            title.Append(series.SeriesShort);
+            title.AppendLine(" " + selectedSession);
+            title.AppendLine(track.name);
+            if (!String.IsNullOrEmpty(raceName) && !String.IsNullOrWhiteSpace(raceName)) title.AppendLine(raceName);
+
+            //title
+            Paragraph session = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 14, Font.BOLD))
+            {
+                Alignment = Element.ALIGN_CENTER,
+                Leading = 17,
+                SpacingAfter = (String.IsNullOrEmpty(raceName) || String.IsNullOrWhiteSpace(raceName)) ? 47 : 30
+            };
+            document.Add(session);
+
+
+            title = new StringBuilder();
+            title.Append("Provided by ");
+            title.Append(series.SeriesName);
+            title.Append(" Statistics");
+            Paragraph providedBy = new Paragraph(title.ToString(), FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.ITALIC))
+            {
+                SpacingAfter = 5f,
+                Alignment = Element.ALIGN_CENTER
+            };
+            document.Add(providedBy);
+
+
+            document.Add(GenerateTopRow(ref SessionData.PRACTICECOLUMNWIDTHS, ref SessionData.PRACTICECOLUMNS));
+
+            document.Add(GenerateDriverRows(drivers, ref SessionData.PRACTICECOLUMNWIDTHS));
+            document.Close();
+
         }
 
         private static PdfPTable GenerateTopRow(ref float[] widths, ref List<Tuple<string, int>> tableData)

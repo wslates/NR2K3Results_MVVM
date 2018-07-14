@@ -9,6 +9,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using Ookii.Dialogs;
+using System.IO;
+using System.Data.SqlClient;
+using System.Data.Entity.Core;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
@@ -136,12 +139,41 @@ namespace NR2K3Results_MVVM.ViewModel
             Messenger.Default.Register<Model.AddDeleteOrModifySeriesMessage>(this, UpdateSeries);
             Series = new ObservableCollection<String>();
             Sessions = new ObservableCollection<String>();
-            UpdateSeries();
+            try
+            {
+                UpdateSeries();
+            }
+            catch (EntityCommandExecutionException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+
+            }
+
+
         }
 
         private void UpdateSeries(AddDeleteOrModifySeriesMessage obj)
         {
-            UpdateSeries();
+            try
+            {
+                UpdateSeries();
+            }
+            catch (EntityCommandExecutionException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+
 
             if (Series.Contains(obj.newSeries))
             {
@@ -177,13 +209,27 @@ namespace NR2K3Results_MVVM.ViewModel
                 string title = string.Concat("Deleting ", selectedSeries);
                 if (MessageBox.Show(message, title, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    using (var db = new NR2K3ResultsEntities())
+                    try
                     {
-                        Series s = db.Series.Where(d => d.SeriesName.Equals(SelectedSeries)).FirstOrDefault();
-                        db.Series.Remove(s);
-                        db.SaveChanges();
+                        using (var db = new NR2K3ResultsEntities())
+                        {
+                            Series s = db.Series.Where(d => d.SeriesName.Equals(SelectedSeries)).FirstOrDefault();
+                            db.Series.Remove(s);
+                            db.SaveChanges();
+                        }
+                        UpdateSeries();
                     }
-                    UpdateSeries();
+                    catch (EntityCommandExecutionException e)
+                    {
+                        MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    catch (SqlException e)
+                    {
+                        MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    }
+
+                    
                     SelectedSeries = (Series.Count>0) ? Series.ElementAt(0) : null;
                 }
             }
@@ -220,39 +266,63 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             if (SelectedSeries != null && resultFilePath != null && track != null)
             {
-                drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
-                ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
-                drivers.Sort();
-                if (selectedSession.Equals("Race"))
+                try
                 {
-                    PDFGeneration.RacePDFGenerator.OutputPDF(drivers, series, RaceName, track);
-                } else
+                    drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
+                    ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
+                    drivers.Sort();
+                } catch (FileNotFoundException e)
                 {
-                    PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, series, selectedSession, RaceName, track);
+                    MessageBox.Show("Error saving file. " + e.Message, "Error Saving file!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+                
+
+                Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog()
+                {
+                    Filter = "PDF Files (*.pdf)|*.pdf"
+                };
+
+                try
+                {
+                    if (dialog.ShowDialog() == true)
+                    {
+                        if (selectedSession.Equals("Race"))
+                        {
+                            PDFGeneration.RacePDFGenerator.OutputPDF(drivers, series, RaceName, track, dialog.FileName);
+                        }
+                        else
+                        {
+                            PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, series, selectedSession, RaceName, track, dialog.FileName);
+                        }
+                    }
+                    else { }
+                } catch (IOException e)
+                {
+                    MessageBox.Show("Error saving file. Check if the file is opened in another window.", "Error Saving file!", MessageBoxButton.OK, MessageBoxImage.Error);
+                } catch (System.Net.WebException e)
+                {
+                    MessageBox.Show("Error saving file. " + e.Message, "Error Saving file!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
         }
 
 
         private void UpdateSeries()
         {
-            using (var db = new NR2K3ResultsEntities())
-            {
-                Series.Clear();
-                foreach (string s in db.Series.Select(d => d.SeriesName))
+         
+                using (var db = new NR2K3ResultsEntities())
                 {
-                    Series.Add(s);
+                    Series.Clear();
+                    foreach (string s in db.Series.Select(d => d.SeriesName))
+                    {
+                        Series.Add(s);
+                    }
                 }
-            }
+            
+
         }
 
-        
-
-        ////public override void Cleanup()
-        ////{
-        ////    // Clean up if needed
-
-        ////    base.Cleanup();
-        ////}
     }
 }

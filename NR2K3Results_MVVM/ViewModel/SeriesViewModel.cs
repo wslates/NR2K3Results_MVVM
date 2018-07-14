@@ -7,6 +7,9 @@ using System;
 using System.Linq;
 using System.Windows;
 using Ookii.Dialogs;
+using System.Data.SqlClient;
+using System.Data.Entity.Core;
+using System.Data.Entity.Infrastructure;
 
 namespace NR2K3Results_MVVM.ViewModel
 {
@@ -148,7 +151,20 @@ namespace NR2K3Results_MVVM.ViewModel
 
         private void OnCloseCommandAction()
         {
-            context.Dispose();
+            try
+            {
+                context.Dispose();
+            }
+            catch (EntityCommandExecutionException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+
             Messenger.Default.Unregister(this);
            
         }
@@ -157,8 +173,19 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             if (obj != null)
             {
+                try
+                {
+                    selectedSeries = context.Series.Where(d => d.SeriesName.Equals(obj.series)).FirstOrDefault();
+                }
+                catch (EntityCommandExecutionException e)
+                {
+                    MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (SqlException e)
+                {
+                    MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                selectedSeries = context.Series.Where(d => d.SeriesName.Equals(obj.series)).FirstOrDefault();
+                }
                 NR2K3Dir = selectedSeries?.NR2K3Dir;
                 Name = selectedSeries?.SeriesName;
                 ShortName = selectedSeries?.SeriesShort;
@@ -260,12 +287,21 @@ namespace NR2K3Results_MVVM.ViewModel
                     SancLogo = SancFull,
                     NR2K3Dir = NR2k3Dir
                 };
+                try
+                {
+                    if (selectedSeries != null) { context.Series.Remove(selectedSeries); }
+                    context.Series.Add(series);
+                    context.SaveChanges();
 
-                if (selectedSeries != null) { context.Series.Remove(selectedSeries); }
-                context.Series.Add(series);
-                context.SaveChanges();
-
+                }
+                catch (DbUpdateException e)
+                {
+                    MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 
+
+
+
                 Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
                 window?.Close();
             } 

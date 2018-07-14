@@ -11,14 +11,14 @@ namespace NR2K3Results_MVVM.PDFGeneration
 {
     class RacePDFGenerator
     {
-        public static void OutputPDF(List<Driver> drivers, Series series, string raceName, Race track)
+        public static void OutputPDF(List<Driver> drivers, Series series, string raceName, Race track, string saveFile)
         {
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;
 
             try
             {
-                fs = new FileStream("test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
+                fs = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
                 
                 //build title
                 StringBuilder title = new StringBuilder();
