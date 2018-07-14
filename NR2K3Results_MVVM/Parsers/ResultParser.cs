@@ -137,7 +137,7 @@ namespace NR2K3Results_MVVM.Parsers
                 {
                     finish = Convert.ToInt16(cells[0]),
                     start = Convert.ToInt16(cells[1]),
-                    timeOffLeader = (cells[4].Contains('L')) ? new TimeSpan() : ParseTime(cells[4]),
+                    timeOffLeader = (cells[4].Contains('L')) ? new TimeSpan() : ParseTime(cells[4]+"R"),
                     lapsDown = (cells[4].Contains('L')) ? Convert.ToInt16(cells[4].Replace("L", String.Empty)):0,
                     laps = Convert.ToInt16(cells[5]),
                     lapsLed = (cells[6].Contains('*')) ? Convert.ToInt16(cells[6].Replace("*", String.Empty)) : Convert.ToInt16(cells[6]),
@@ -172,7 +172,9 @@ namespace NR2K3Results_MVVM.Parsers
         private static TimeSpan ParseTime(string time)
         {
             int minutes = 0;
+            bool race = time.Contains("R");
             time = time.Replace("-", String.Empty);
+            time = time.Replace("R", String.Empty);
             var data = time.Split('.');
 
             if (time.Contains(":"))
@@ -182,7 +184,7 @@ namespace NR2K3Results_MVVM.Parsers
             }
             
             
-            return new TimeSpan(0, 0, minutes, Convert.ToInt16(data[0]), Convert.ToInt16(data[1]));
+            return new TimeSpan(0, 0, minutes, Convert.ToInt16(data[0]), (race) ? Convert.ToInt16(data[1]) * 10 : Convert.ToInt16(data[1]));
             
         }
     }
