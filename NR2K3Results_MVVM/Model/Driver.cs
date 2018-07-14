@@ -81,6 +81,10 @@ namespace NR2K3Results_MVVM.Model
 
             return Decimal.Round(result.timeOffNext, 3).ToString();
         }
+        public String GetName()
+        {
+            return String.Format("{0} {1}", firstName, lastName);
+        }
         public override string ToString()
         {
             

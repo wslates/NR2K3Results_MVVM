@@ -113,7 +113,7 @@
     <Compile Include="Model\Driver.cs" />
     <Compile Include="Model\DriverResult.cs" />
     <Compile Include="Model\IDataService.cs" />
-    <Compile Include="Model\Track.cs" />
+    <Compile Include="Model\Race.cs" />
     <Compile Include="NR2K3ResultsModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

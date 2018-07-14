@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace NR2K3Results_MVVM.Parsers
@@ -27,7 +28,7 @@ namespace NR2K3Results_MVVM.Parsers
             }
         }
 
-        public static void Parse(ref List<Driver> drivers, string filePath, string session, decimal length)
+        public static void Parse(ref List<Driver> drivers, string filePath, string session, ref Race track)
         {
 
             HtmlDocument doc = new HtmlDocument();
@@ -37,11 +38,35 @@ namespace NR2K3Results_MVVM.Parsers
 
             if (session.Equals("Race"))
             {
-                ParseRace(ref drivers, table, length);
+                ParseRace(ref drivers, table, ref track);
+                GetRaceData(filePath, ref track);
             }
             else
             {
-                ParsePracQual(ref drivers, table, length);
+                ParsePracQual(ref drivers, table, track.length);
+            }
+        }
+
+        private static void GetRaceData(string filePath, ref Race track)
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.Load(filePath);
+
+            var headers = doc.DocumentNode.SelectNodes("//h3");
+            foreach (var header in headers)
+            {
+                if (header.InnerText.Contains("Caution Flags"))
+                {
+                    var data = new string(header.InnerText.Trim().Where(c => char.IsDigit(c) || char.IsWhiteSpace(c)).ToArray()).Split(' ').Where(d=> !String.IsNullOrWhiteSpace(d)).ToArray();
+                    track.cautions = Convert.ToInt16(data[0]);
+                    track.cautionLaps = Convert.ToInt16(data[1]);
+                }
+                else if (header.InnerText.Contains("Lead Changes"))
+                {
+                    var data = new string(header.InnerText.Trim().Where(c => char.IsDigit(c) || char.IsWhiteSpace(c)).ToArray()).Split(' ').Where(d => !String.IsNullOrWhiteSpace(d)).ToArray();
+                    track.leadChanges = Convert.ToInt16(data[0].Trim());
+                    track.leaders = Convert.ToInt16(data[1].Trim());
+                }
             }
         }
 
@@ -97,15 +122,16 @@ namespace NR2K3Results_MVVM.Parsers
             drivers = drivers.Where(d => d.result != null).ToList();
         }
 
-        private static void ParseRace (ref List<Driver> drivers, List<HtmlNode> table, decimal length)
+        private static void ParseRace (ref List<Driver> drivers, List<HtmlNode> table, ref Race track)
         {
             //remove first row of table with column names
             table.RemoveAt(0);
-
+            var cells = table[0].ChildNodes.Where(d => d.Name.Equals("td")).Select(t => t.InnerText.Trim()).ToList();
+            track.laps = Convert.ToInt16(cells[5]);
+            track.speed = Convert.ToDecimal(cells[4]);
             foreach (var row in table)
             {
-                var cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t => t.InnerText.Trim()).ToList();
-
+                cells = row.ChildNodes.Where(d => d.Name.Equals("td")).Select(t => t.InnerText.Trim()).ToList();
                 DriverResult driverResult = new DriverResult
                 {
                     finish = Convert.ToInt16(cells[0]),
@@ -134,11 +160,11 @@ namespace NR2K3Results_MVVM.Parsers
                 {
                     drivers.Add(driver);
                 }
-
                 
             }
             //in case some drivers were in the roster but not in the race, remove them
             drivers = drivers.Where(d => d.result != null).ToList();
+            
         }
     }
 }

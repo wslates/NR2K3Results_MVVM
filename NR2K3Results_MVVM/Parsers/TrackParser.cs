@@ -3,14 +3,14 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
-
+using System.Linq;
 namespace NR2K3Results_MVVM.Parsers
 {
     class TrackParser
     {
-        public static Track Parse(String NR2003Dir, String filepath)
+        public static Race Parse(String NR2003Dir, String filepath)
         {
-            Track retTrack = new Track();
+            Race retTrack = new Race();
             string line;
             StreamReader file = new StreamReader(filepath);
             while ((line = file.ReadLine()) != null)
@@ -37,8 +37,10 @@ namespace NR2K3Results_MVVM.Parsers
                         string[] splitLine = line.Split('=');
                         if (splitLine[0].Trim().Equals("track_name"))
                         {
+                            string trackName = new string(splitLine[1].Trim().Where(c => !Char.IsSymbol(c)).ToArray());
+                            
                             //if this is not the track we want, move on to the next folder
-                            if (!splitLine[1].Trim().Equals(retTrack.name))
+                            if (!trackName.Equals(retTrack.name))
                             {
                                 break;
                             }

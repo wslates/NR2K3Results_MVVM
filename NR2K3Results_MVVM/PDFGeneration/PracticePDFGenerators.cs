@@ -17,12 +17,12 @@ namespace NR2K3Results_MVVM.PDFGeneration
         private static Random rand = new Random();
 
 
-        public static void OutputPDF(List<Driver> drivers, Series series, string selectedSession, string raceName, Track track)
+        public static void OutputPDF(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track)
         {
             HappyHourPracticePDFGen(drivers, series, selectedSession, raceName, track);
         }
 
-        private static void HappyHourPracticePDFGen(List<Driver> drivers, Series series, string selectedSession, string raceName, Track track)
+        private static void HappyHourPracticePDFGen(List<Driver> drivers, Series series, string selectedSession, string raceName, Race track)
         {
             Document document = new Document(PageSize.A4, 15, 25, 15, 30);
             FileStream fs = null;

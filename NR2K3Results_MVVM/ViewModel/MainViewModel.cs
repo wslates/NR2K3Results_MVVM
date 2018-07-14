@@ -25,7 +25,7 @@ namespace NR2K3Results_MVVM.ViewModel
         private String resultFilePath;
         private String raceName;
         private readonly IDataService _dataService;
-        private Track track;
+        private Race track;
         private Series series;
         private string resultFile;
         private List<Driver> drivers;
@@ -221,11 +221,11 @@ namespace NR2K3Results_MVVM.ViewModel
             if (SelectedSeries != null && resultFilePath != null && track != null)
             {
                 drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
-                ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, track.length);
+                ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
                 drivers.Sort();
                 if (selectedSession.Equals("Race"))
                 {
-                    
+                    PDFGeneration.RacePDFGenerator.OutputPDF(drivers, series, RaceName, track);
                 } else
                 {
                     PDFGeneration.PracticePDFGenerators.OutputPDF(drivers, series, selectedSession, RaceName, track);
