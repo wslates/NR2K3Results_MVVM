@@ -8,13 +8,21 @@ namespace NR2K3Results_MVVM.Parsers
 {
     class TrackParser
     {
+        /// <summary>
+        /// Using the result file, gets the all the track's data.
+        /// </summary>
+        /// <param name="NR2003Dir">NR2003 root directory.</param>
+        /// <param name="filepath">File Path to result file.</param>
+        /// <returns></returns>
         public static Race Parse(String NR2003Dir, String filepath)
         {
             Race retTrack = new Race();
             string line;
             StreamReader file = new StreamReader(filepath);
+
             while ((line = file.ReadLine()) != null)
             {
+                //get the track name from the result file
                 if (line.Contains("Track: "))
                 {
                     retTrack.name = line.Split(':')[1].Trim();
@@ -22,7 +30,7 @@ namespace NR2K3Results_MVVM.Parsers
                 }
             }
 
-            //gets all directories in that folder, i.e. the tracks
+            //gets all directories in the track folder
             string[] tracks = Directory.GetDirectories(NR2003Dir + "\\tracks");
             bool trackFound = false;
 
@@ -40,18 +48,19 @@ namespace NR2K3Results_MVVM.Parsers
                             string trackName = new string(splitLine[1].Trim().Where(c => !Char.IsSymbol(c)).ToArray());
                             
                             //if this is not the track we want, move on to the next folder
-                            if (!trackName.Equals(retTrack.name))
-                            {
+                            if (!trackName.Equals(retTrack.name))   
                                 break;
-                            }
                             else
                                 trackFound = true;    
                         }
                         else if (splitLine[0].Trim().Equals("track_length"))
                         {
                             string length = splitLine[1];
+                            //contains an m and sometimes a space, so just remove anything that is not a number or decimal point
                             length = Regex.Replace(length, "[^0-9.]", "");
                             retTrack.length = Convert.ToDecimal(length);
+
+                            //this is the last data point we'll need, so let's stop reading the file
                             break;
                         }
                         else if (splitLine[0].Trim().Equals("track_length_n_type"))
@@ -73,7 +82,7 @@ namespace NR2K3Results_MVVM.Parsers
                 }
                 catch (IOException e)
                 {
-                    //just means we hit a folder without a track.ini file, such as the "shared" folder
+                    //most likely means we hit a folder without a track.ini file, such as the "shared" folder
                     continue;
                 }
 

@@ -79,9 +79,9 @@ namespace NR2K3Results_MVVM.PDFGeneration
             document.Add(providedBy);
 
 
-            document.Add(GenerateTopRow(ref SessionData.PRACTICECOLUMNWIDTHS, ref SessionData.PRACTICECOLUMNS));
+            document.Add(GenerateTopRow(ref TableData.PRACTICECOLUMNS., ref TableData.PRACTICECOLUMNS));
 
-            document.Add(GenerateDriverRows(drivers, ref SessionData.PRACTICECOLUMNWIDTHS));
+            document.Add(GenerateDriverRows(drivers, ref TableData.PRACTICECOLUMNWIDTHS));
             document.Close();
 
         }

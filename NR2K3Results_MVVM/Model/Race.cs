@@ -1,6 +1,6 @@
 ﻿namespace NR2K3Results_MVVM.Model
 {
-    class Race
+    struct Race
     {
         public string name;
         public decimal length;

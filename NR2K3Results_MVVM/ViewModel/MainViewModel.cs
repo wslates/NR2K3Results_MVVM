@@ -264,7 +264,7 @@ namespace NR2K3Results_MVVM.ViewModel
         }
         public void OutputCommandAction()
         {
-            if (SelectedSeries != null && resultFilePath != null && track != null)
+            if (SelectedSeries != null && resultFilePath != null)
             {
                 try
                 {

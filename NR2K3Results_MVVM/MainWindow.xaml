@@ -129,7 +129,7 @@
         <ComboBox x:Name="SessionComboBox"
                   HorizontalAlignment="Left" 
                   VerticalAlignment="Top" 
-                  Width="120" 
+                  Width="105" 
                   Margin="71,132,0,0" 
                   Grid.Column="1"
                   ItemsSource="{Binding Sessions, Mode=OneWay}"

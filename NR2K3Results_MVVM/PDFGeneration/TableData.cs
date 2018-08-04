@@ -1,18 +1,23 @@
 ﻿using iTextSharp.text;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace NR2K3Results_MVVM.PDFGeneration
 {
-    class SessionData
+    /// <summary>
+    /// 
+    /// </summary>
+    static class TableData
     {
         /// <summary>
-        /// Practice and Happy Hour Data
+        /// Practice/Qualifying column widths.
         /// </summary>
         public static float[] PRACTICECOLUMNWIDTHS = { 5f, 6f, 17f, 30f, 25f, 10f, 10f, 10f, 10f };
+
+        /// <summary>
+        /// Practice/Qualifying column title data. 
+        /// </summary>
         public static List<Tuple<string, int>> PRACTICECOLUMNS = new List<Tuple<string, int>>()
         {
             Tuple.Create("Pos", Element.ALIGN_RIGHT),
@@ -26,7 +31,14 @@ namespace NR2K3Results_MVVM.PDFGeneration
             Tuple.Create("-Next", Element.ALIGN_RIGHT)
         };
 
+        /// <summary>
+        /// Race column widths.
+        /// </summary>
         public static float[] RACECOLUMNWIDTHS = { 5f, 5f, 6f, 18f, 30f, 25f, 7f, 10f, 10f, 5f};
+
+        /// <summary>
+        /// Race column title data. 
+        /// </summary>
         public static List<Tuple<string, int>> RACECOLUMNS = new List<Tuple<string, int>>()
         {
             Tuple.Create("Fin", Element.ALIGN_RIGHT),

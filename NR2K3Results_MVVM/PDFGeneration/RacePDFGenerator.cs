@@ -57,8 +57,8 @@ namespace NR2K3Results_MVVM.PDFGeneration
 
 
 
-                document.Add(GenerateTopRow(ref SessionData.RACECOLUMNWIDTHS, ref SessionData.RACECOLUMNS));
-                document.Add(GenerateDriverRows(drivers, ref SessionData.RACECOLUMNWIDTHS));
+                document.Add(GenerateTopRow(ref TableData.RACECOLUMNWIDTHS, ref TableData.RACECOLUMNS));
+                document.Add(GenerateDriverRows(drivers, ref TableData.RACECOLUMNWIDTHS));
                 document.Add(GenerateRaceStats(drivers, track));
                 document.Add(GenerateCautionsLeadersAndPositionalChanges(drivers, track));
 
@@ -154,20 +154,7 @@ namespace NR2K3Results_MVVM.PDFGeneration
             secondElement = new Chunk(drivers[1].GetOffLeader().Replace("-", String.Empty) + " Seconds", FontFactory.GetFont(FontFactory.HELVETICA, 9, Font.NORMAL));
             full.Add(secondElement);
             table.AddCell(new PdfPCell(full) { Border = Rectangle.NO_BORDER });
-
-            
-
             return table;
-
-           
-            
-
-         
-            
-
-
-            
-            
         }
 
         private static PdfPTable GenerateTopRow(ref float[] widths, ref List<Tuple<string, int>> tableData)
