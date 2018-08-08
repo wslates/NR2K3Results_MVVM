@@ -22,8 +22,8 @@ namespace NR2K3Results_MVVM.Parsers
         /// Gets the sessions and updates "sessions" collection with the sessions that were ran in this result file.
         /// </summary>
         /// <param name="filePath">Filepath to result files.</param>
-        /// <param name="sessions">Sessions that were ran in this result file.</param>
-        public static void GetSessions(String filePath, ObservableCollection<String> sessions)
+        /// <param name="sessios">Sessions that were ran in this result file.</param>
+        public static void GetSessions(String filePath, ObservableCollection<String> session)
         {
             var doc = new HtmlDocument();
             doc.Load(@filePath);
@@ -36,7 +36,7 @@ namespace NR2K3Results_MVVM.Parsers
                 //checks to see if this table has more than one row, which would indicate there are results.
                 if (table.ChildNodes.Where(d=>d.Name.ToLower().Equals("tr")).Count() > 1)
                 {
-                    sessions.Add(sessions[tables.IndexOf(table)]);
+                    session.Add(sessions[tables.IndexOf(table)]);
                 }                
             }
         }

@@ -19,7 +19,7 @@ namespace NR2K3Results_MVVM.Parsers
         /// 
         /// <param name="RosterFilePath">Path to the roster file.</param>
         /// <returns></returns>
-        public static List<Driver> GetRosterDrivers(String RosterFilePath)
+        public static List<Driver> GetRosterDrivers(String NR2003, String RosterFilePath)
         {
             string[] lines = System.IO.File.ReadAllLines(RosterFilePath);
             List<Driver> drivers = new List<Driver>();
@@ -40,9 +40,99 @@ namespace NR2K3Results_MVVM.Parsers
                     }
                 }               
             }
+            drivers.AddRange(GetPlayerCars(CarsFilePath + "\\" , NR2003));
             return drivers;
         }
         
+        /// <summary>
+        /// Gets all the player's car data for each of their mods.
+        /// </summary>
+        /// <param name="modFolderPath">The path of the parent folder of the roster file.</param>
+        /// <param name="NR2003">NR2003 directory</param>
+        /// <returns></returns>
+        private static List<Driver> GetPlayerCars(string modFolderPath, string NR2003)
+        {
+            //get all directories in the players folder
+            string[] players = Directory.GetDirectories(NR2003 + "\\players");
+            List<Driver> cars = new List<Driver>();
+            foreach (string player in players)
+            {
+                List<Driver> playerCars = GetPlayerSingleMultiCars(modFolderPath, player);
+                
+                if (playerCars != null)
+                {
+                    using (StreamReader file = new StreamReader(player + "\\player.ini"))
+                    {
+                        string line;
+
+                        //updates driver information with player's name
+                        while ((line = file.ReadLine()) != null)
+                        {
+                            string[] data = line.Split('=');
+                            if (data[0].Trim().Equals("firstName"))
+                            {
+                                foreach (Driver driver in playerCars)
+                                {
+                                    
+                                    driver.firstName = data[1].Split(';')[0].Trim();
+                                }
+                            }
+                            else if (data[0].Trim().Equals("lastName"))
+                            {
+                                foreach (Driver driver in playerCars)
+                                {
+                                    driver.lastName = data[1].Split(';')[0].Trim();
+                                    driver.isPlayer = true;
+                                }
+                                break;
+                            }
+
+                        }
+                    }
+                    cars.AddRange(playerCars);
+                }
+                
+            }
+            return cars;
+
+        }
+
+        /// <summary>
+        /// Gets each of the player's car selections for each of their mods.
+        /// </summary>
+        /// <param name="modFolderPath">The path of the parent folder of the roster file.</param>
+        /// <param name="NR2003">NR2003 directory</param>
+        /// <returns></returns>
+        private static List<Driver> GetPlayerSingleMultiCars(string modFolderPath, string player)
+        {
+            List<Driver> cars = new List<Driver>(2);
+
+            using (StreamReader file = new StreamReader(player + "\\player.ini"))
+            {
+                string line;
+
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] data = line.Split('=');
+
+                    if (data[0].Trim().Equals("SelectedCarFile") || data[0].Trim().Equals("SelectedCarFileMulti"))
+                    {
+                        try
+                        {
+                            cars.Add(OpenCarFile(modFolderPath + data[1].Split(';')[0].Trim()));
+                        }
+                        catch (IOException e)
+                        {
+                            //car of wrong mod type
+                        }
+                    }
+
+                }
+
+            }
+            return cars;
+        }
+
         /// <summary>
         /// Opens a car file and reads the relevant data.
         /// </summary>

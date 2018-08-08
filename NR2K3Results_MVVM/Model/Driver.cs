@@ -13,6 +13,7 @@ namespace NR2K3Results_MVVM.Model
         public string number;
         public string sponsor;
         public string team;
+        public bool isPlayer;
         public DriverResult result;
 
         public int CompareTo(Driver other)
@@ -32,14 +33,9 @@ namespace NR2K3Results_MVVM.Model
 
             Driver driver = obj as Driver;
 
-            if (driver.lastName.Equals(lastName) && 
-                driver.firstName[0]==firstName[0] && 
-                driver.number.Equals(number))
-            {
-                return true;
-            }
+            bool equal = driver.lastName.Equals(lastName) && driver.firstName[0] == firstName[0] && driver.number.Equals(number);
 
-            return false;
+            return (equal && isPlayer) || equal;
         }
 
         public int GetFinish()
@@ -112,17 +108,12 @@ namespace NR2K3Results_MVVM.Model
         }
         public override string ToString()
         {
-            
-            string timeOff = (result.lapsDown != 0) ? result.timeOffLeader.ToString() : result.lapsDown.ToString();
-            return  "#" + number + 
-                    "; " + firstName + " " + lastName + 
-                    "; " + sponsor + 
-                    "; " + team +
-                    "; " + result.finish + 
-                    "; " + result.time + 
-                    "; " + result.timeOffLeader + 
-                    "; " + result.timeOffNext;
+            return "#" + number +
+                    "; " + firstName + " " + lastName +
+                    "; " + sponsor +
+                    "; " + team;
         }
+
 
         
     }

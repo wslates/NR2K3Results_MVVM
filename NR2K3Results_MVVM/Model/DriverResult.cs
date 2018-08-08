@@ -2,7 +2,7 @@
 
 namespace NR2K3Results_MVVM.Model
 {
-    struct DriverResult
+    class DriverResult
     {
         public int start;
         public int finish;

@@ -268,8 +268,8 @@ namespace NR2K3Results_MVVM.ViewModel
             {
                 try
                 {
-                    drivers = CarFileParser.GetRosterDrivers(series.RosterFile);
-                    ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
+                    drivers = CarFileParser.GetRosterDrivers(series.NR2K3Dir, series.RosterFile);
+                    ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);                  
                     drivers.Sort();
                 } catch (FileNotFoundException e)
                 {

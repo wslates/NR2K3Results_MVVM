@@ -135,6 +135,7 @@
                   ItemsSource="{Binding Sessions, Mode=OneWay}"
                   SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
                   SelectedIndex="0"/>
+        <RadioButton x:Name="radioButton" Content="Ignore User?" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="192,134,0,0"/>
     </Grid>
 
 
