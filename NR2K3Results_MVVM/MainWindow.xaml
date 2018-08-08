@@ -135,7 +135,14 @@
                   ItemsSource="{Binding Sessions, Mode=OneWay}"
                   SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
                   SelectedIndex="0"/>
-        <RadioButton x:Name="radioButton" Content="Ignore User?" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="192,134,0,0"/>
+        <CheckBox x:Name="checkBox" 
+                  Content="Ignore User?"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Grid.Column="1"
+                  Margin="196,134,0,0"
+                  Width="95"
+                  IsChecked="{Binding IgnoreUser}" />
     </Grid>
 
 

@@ -24,6 +24,5 @@ namespace NR2K3Results_MVVM
             Closing += (s, e) => ViewModelLocator.Cleanup();
         }
 
-      
     }
 }

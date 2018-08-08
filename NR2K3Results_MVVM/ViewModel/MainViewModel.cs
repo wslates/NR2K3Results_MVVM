@@ -32,6 +32,7 @@ namespace NR2K3Results_MVVM.ViewModel
         private Series series;
         private string resultFile;
         private List<Driver> drivers;
+        private bool ignoreUser;
 
         public String SelectedSeries
         {
@@ -82,6 +83,18 @@ namespace NR2K3Results_MVVM.ViewModel
             set
             {
                 Set(ref raceName, value);
+            }
+        }
+
+        public bool IgnoreUser
+        {
+            get
+            {
+                return ignoreUser;
+            }
+            set
+            {
+                Set(ref ignoreUser, value);
             }
         }
         public RelayCommand NewSeriesCommand { get; private set; }
@@ -269,7 +282,8 @@ namespace NR2K3Results_MVVM.ViewModel
                 try
                 {
                     drivers = CarFileParser.GetRosterDrivers(series.NR2K3Dir, series.RosterFile);
-                    ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);                  
+                    ResultParser.Parse(ref drivers, resultFilePath, SelectedSession, ref track);
+                    if (ignoreUser) drivers = drivers.Where(d => !d.isPlayer).ToList();
                     drivers.Sort();
                 } catch (FileNotFoundException e)
                 {
