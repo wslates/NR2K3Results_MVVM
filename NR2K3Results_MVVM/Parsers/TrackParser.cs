@@ -18,6 +18,7 @@ namespace NR2K3Results_MVVM.Parsers
         {
             Race retTrack = new Race();
             string line;
+
             StreamReader file = new StreamReader(filepath);
 
             while ((line = file.ReadLine()) != null)
@@ -33,7 +34,7 @@ namespace NR2K3Results_MVVM.Parsers
             //gets all directories in the track folder
             string[] tracks = Directory.GetDirectories(NR2003Dir + "\\tracks");
             bool trackFound = false;
-
+          
             foreach (string track in tracks)
             {
                 try
@@ -45,8 +46,8 @@ namespace NR2K3Results_MVVM.Parsers
                         string[] splitLine = line.Split('=');
                         if (splitLine[0].Trim().Equals("track_name"))
                         {
-                            string trackName = new string(splitLine[1].Trim().Where(c => !Char.IsSymbol(c)).ToArray());
-                            
+                            string trackName = splitLine[1].Trim();
+
                             //if this is not the track we want, move on to the next folder
                             if (!trackName.Equals(retTrack.name))   
                                 break;

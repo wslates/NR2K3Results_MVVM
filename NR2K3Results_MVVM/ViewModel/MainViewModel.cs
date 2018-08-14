@@ -198,18 +198,32 @@ namespace NR2K3Results_MVVM.ViewModel
 
         public void NewSeriesCommandAction()
         {
-            View.SeriesWindow window = new View.SeriesWindow();
-            window.ShowDialog();
-            window = null;
+            try
+            {
+                View.SeriesWindow window = new View.SeriesWindow();
+                window.ShowDialog();
+                window = null;
+            } catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
         public void EditSeriesCommandAction()
         { 
             if (selectedSeries!=null)
             {
-                View.SeriesWindow window = new View.SeriesWindow();
-                Messenger.Default.Send(new SendDataToSeriesView(SelectedSeries));
-                window.ShowDialog();
+                try
+                {
+                    View.SeriesWindow window = new View.SeriesWindow();
+                    Messenger.Default.Send(new SendDataToSeriesView(SelectedSeries));
+                    window.ShowDialog();
+                } catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
             }
          
         }
