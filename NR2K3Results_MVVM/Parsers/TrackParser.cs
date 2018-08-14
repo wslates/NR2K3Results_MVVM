@@ -19,7 +19,8 @@ namespace NR2K3Results_MVVM.Parsers
             Race retTrack = new Race();
             string line;
 
-            StreamReader file = new StreamReader(filepath);
+            //force ANSI encoding if track name uses special characters
+            StreamReader file = new StreamReader(filepath, System.Text.Encoding.GetEncoding(1252));
 
             while ((line = file.ReadLine()) != null)
             {
@@ -39,7 +40,8 @@ namespace NR2K3Results_MVVM.Parsers
             {
                 try
                 {
-                    file = new StreamReader(track + "\\track.ini");
+                    //force ANSI encoding if track name uses special characters
+                    file = new StreamReader(track + "\\track.ini", System.Text.Encoding.GetEncoding(1252));
 
                     while ((line = file.ReadLine()) != null)
                     {
