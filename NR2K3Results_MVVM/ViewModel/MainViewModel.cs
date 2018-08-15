@@ -27,7 +27,6 @@ namespace NR2K3Results_MVVM.ViewModel
         private String selectedSession;
         private String resultFilePath;
         private String raceName;
-        private readonly IDataService _dataService;
         private Race track;
         private Series series;
         private string resultFile;
@@ -104,46 +103,13 @@ namespace NR2K3Results_MVVM.ViewModel
         public RelayCommand ResultFileCommand { get; private set; }
         public ObservableCollection<String> Series { get; private set; }
         public ObservableCollection<String> Sessions { get; private set; }
-        /// <summary>
-        /// The <see cref="WelcomeTitle" /> property's name.
-        /// </summary>
-        public const string WelcomeTitlePropertyName = "WelcomeTitle";
 
-        private string _welcomeTitle = string.Empty;
-
-        /// <summary>
-        /// Gets the WelcomeTitle property.
-        /// Changes to that property's value raise the PropertyChanged event. 
-        /// </summary>
-        public string WelcomeTitle
-        {
-            get
-            {
-                return _welcomeTitle;
-            }
-            set
-            {
-                Set(ref _welcomeTitle, value);
-            }
-        }
 
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(IDataService dataService)
+        public MainViewModel()
         {
-            _dataService = dataService;
-            _dataService.GetData(
-                (item, error) =>
-                {
-                    if (error != null)
-                    {
-                        // Report error here
-                        return;
-                    }
-
-                    WelcomeTitle = item.Title;
-                });
             NewSeriesCommand = new RelayCommand(NewSeriesCommandAction);
             EditSeriesCommand = new RelayCommand(EditSeriesCommandAction);
             DeleteSeriesCommand = new RelayCommand(DeleteSeriesCommandAction);

@@ -15,6 +15,7 @@ namespace NR2K3Results_MVVM.ViewModel
 {
     public class SeriesViewModel:ViewModelBase
     {
+        #region PRIVATE_PROPERTIES
         private Series selectedSeries;
         private String RosterFull;
         private String SeriesFull;
@@ -27,7 +28,9 @@ namespace NR2K3Results_MVVM.ViewModel
         private String seriesLogo;
         private String sancLogo;
         private String NR2k3Dir;
+        #endregion
 
+        #region COMMANDS
         public RelayCommand OpenRosterFileCommand { get; private set; }
         public RelayCommand LoadNewSeriesCommand { get; private set; }
         public RelayCommand LoadNewSancCommand { get; private set; }
@@ -35,7 +38,9 @@ namespace NR2K3Results_MVVM.ViewModel
         public RelayCommand<Window> CancelCommand { get; private set; }
         public RelayCommand OnCloseCommand { get; private set; }
         public RelayCommand NR2K3RootCommand { get; private set; }
+        #endregion
 
+        #region PUBLIC_PROPERTIES
         public String Name
         {
             get
@@ -120,6 +125,7 @@ namespace NR2K3Results_MVVM.ViewModel
                 RaisePropertyChanged();
             }
         }
+        #endregion
 
         public SeriesViewModel()
         {
@@ -133,12 +139,19 @@ namespace NR2K3Results_MVVM.ViewModel
             Messenger.Default.Register<Model.SendDataToSeriesView>(this, ReceiveSeriesData);
 
         }
-
+        
+        /// <summary>
+        /// Method to execute when the user cancels editing or creating a series.
+        /// </summary>
+        /// <param name="obj">Reference to this window.</param>
         private void CancelCommandAction(Window obj)
         {
             obj.Close();
         }
 
+        /// <summary>
+        /// Method to execute when the user opens their NR2K3 root folder.
+        /// </summary>
         private void NR2K3RootCommandAction()
         {
             Ookii.Dialogs.Wpf.VistaFolderBrowserDialog diag = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
@@ -149,10 +162,14 @@ namespace NR2K3Results_MVVM.ViewModel
             }
         }
 
+        /// <summary>
+        /// Method that executes when the window is closed.
+        /// </summary>
         private void OnCloseCommandAction()
         {
             try
             {
+                //dispose of the context object
                 context.Dispose();
             }
             catch (EntityCommandExecutionException e)
@@ -165,10 +182,14 @@ namespace NR2K3Results_MVVM.ViewModel
 
             }
 
+            //unregister messaging
             Messenger.Default.Unregister(this);
-           
         }
 
+        /// <summary>
+        /// Method to execute when view model receives message from main view model with all data.
+        /// </summary>
+        /// <param name="obj">Data from message.</param>
         private void ReceiveSeriesData(SendDataToSeriesView obj)
         {
             if (obj != null)
@@ -200,6 +221,9 @@ namespace NR2K3Results_MVVM.ViewModel
 
         }
 
+        /// <summary>
+        /// Method to execute when user opens the roster file.
+        /// </summary>
         public void OpenRosterFileCommandAction()
         {
             if (NR2k3Dir !=null)
@@ -224,6 +248,9 @@ namespace NR2K3Results_MVVM.ViewModel
             
         }
 
+        /// <summary>
+        /// Method to execute when user opens a new series image.
+        /// </summary>
         public void LoadNewSeriesCommandAction()
         {
             String path = LoadImage();
@@ -236,6 +263,9 @@ namespace NR2K3Results_MVVM.ViewModel
             } 
         }
 
+        /// <summary>
+        /// Action to execute when user opens a new sanctioning body image.
+        /// </summary>
         public void LoadNewSancCommandAction()
         {
             String path = LoadImage();
@@ -248,6 +278,10 @@ namespace NR2K3Results_MVVM.ViewModel
             }
         }
 
+        /// <summary>
+        /// Prompts user with open file dialog to open an image.
+        /// </summary>
+        /// <returns>Returns the path to the image the user opened.</returns>
         private String LoadImage()
         {
             Microsoft.Win32.OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
@@ -271,8 +305,13 @@ namespace NR2K3Results_MVVM.ViewModel
             
         }
 
+        /// <summary>
+        /// Action to execute when the user saves the series.
+        /// </summary>
+        /// <param name="window">Reference to this window.</param>
         public void SaveSeriesCommandAction(Window window)
         {
+            //make sure all data is filled
             if (String.IsNullOrEmpty(Name) || String.IsNullOrEmpty(ShortName) || String.IsNullOrEmpty(RosterFull) || String.IsNullOrEmpty(NR2k3Dir))
             {
                 MessageBox.Show("Please enter all required data!", "Error Saving Series!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -299,9 +338,7 @@ namespace NR2K3Results_MVVM.ViewModel
                     MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 
-
-
-
+                //send the data back to the main view model.
                 Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
                 window?.Close();
             } 
