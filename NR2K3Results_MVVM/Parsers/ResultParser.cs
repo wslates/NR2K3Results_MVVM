@@ -16,17 +16,19 @@ namespace NR2K3Results_MVVM.Parsers
         /// <summary>
         /// 4 possible sessions that can be run.
         /// </summary>
-        private static readonly List<String> sessions = new List<string> { "Practice", "Qualifying", "Happy Hour", "Race" };
+        private static List<String> _sessions;
         
         /// <summary>
         /// Gets the sessions and updates "sessions" collection with the sessions that were ran in this result file.
         /// </summary>
         /// <param name="filePath">Filepath to result files.</param>
-        /// <param name="sessios">Sessions that were ran in this result file.</param>
+        /// <param name="session">Sessions that were ran in this result file.</param>
         public static void GetSessions(String filePath, ObservableCollection<String> session)
         {
             var doc = new HtmlDocument();
             doc.Load(@filePath);
+
+            _sessions = doc.DocumentNode.SelectNodes("//h3").Where(d => d.InnerText.Contains("Session")).Select(d=> d.InnerText.Split(':')[1].Trim()).ToList();
 
             //selects all tables in the document
             var tables = doc.DocumentNode.SelectNodes("//table");
@@ -36,7 +38,7 @@ namespace NR2K3Results_MVVM.Parsers
                 //checks to see if this table has more than one row, which would indicate there are results.
                 if (table.ChildNodes.Where(d=>d.Name.ToLower().Equals("tr")).Count() > 1)
                 {
-                    session.Add(sessions[tables.IndexOf(table)]);
+                    session.Add(_sessions.ElementAt(tables.IndexOf(table)));
                 }                
             }
         }
@@ -54,7 +56,7 @@ namespace NR2K3Results_MVVM.Parsers
             HtmlDocument doc = new HtmlDocument();
             doc.Load(@filePath);
 
-            var table = doc.DocumentNode.SelectNodes("//table").ElementAt(sessions.IndexOf(session)).ChildNodes.Where(d => d.Name.Equals("tr")).ToList();
+            var table = doc.DocumentNode.SelectNodes("//table").ElementAt(_sessions.IndexOf(session)).ChildNodes.Where(d => d.Name.Equals("tr")).ToList();
 
             if (session.Equals("Race"))
             {
