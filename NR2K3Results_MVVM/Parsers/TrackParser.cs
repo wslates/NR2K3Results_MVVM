@@ -27,7 +27,7 @@ namespace NR2K3Results_MVVM.Parsers
                 //get the track name from the result file
                 if (line.Contains("Track: "))
                 {
-                    retTrack.name = line.Split(':')[1].Trim();
+                    retTrack.name = new string(line.Split(':')[1].Trim().Where(c => (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c) || c == '-')).ToArray());
                     break;
                 }
             }
@@ -48,7 +48,7 @@ namespace NR2K3Results_MVVM.Parsers
                         string[] splitLine = line.Split('=');
                         if (splitLine[0].Trim().Equals("track_name"))
                         {
-                            string trackName = splitLine[1].Trim();
+                            string trackName = new string(splitLine[1].Trim().Where(c => (char.IsLetterOrDigit(c) || char.IsWhiteSpace(c) || c == '-')).ToArray());
 
                             //if this is not the track we want, move on to the next folder
                             if (!trackName.Equals(retTrack.name))   

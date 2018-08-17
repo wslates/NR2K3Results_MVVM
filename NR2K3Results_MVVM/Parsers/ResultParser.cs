@@ -28,6 +28,7 @@ namespace NR2K3Results_MVVM.Parsers
             var doc = new HtmlDocument();
             doc.Load(@filePath);
 
+            //get the sessions shown in the result file
             _sessions = doc.DocumentNode.SelectNodes("//h3").Where(d => d.InnerText.Contains("Session")).Select(d=> d.InnerText.Split(':')[1].Trim()).ToList();
 
             //selects all tables in the document
