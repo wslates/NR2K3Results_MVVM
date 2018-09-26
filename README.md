@@ -16,3 +16,5 @@ Before and after examples can be found in the /Examples folder.
   - input.png is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
   - output.pdf is the end result of the program. 
   
+
+I apologize in advance for the lack of documentation on some of the code, I am still working on that.
