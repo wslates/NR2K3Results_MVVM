@@ -194,6 +194,7 @@ namespace NR2K3Results_MVVM.ViewModel
         {
             if (obj != null)
             {
+                
                 try
                 {
                     selectedSeries = context.Series.Where(d => d.SeriesName.Equals(obj.series)).FirstOrDefault();
@@ -315,7 +316,8 @@ namespace NR2K3Results_MVVM.ViewModel
             if (String.IsNullOrEmpty(Name) || String.IsNullOrEmpty(ShortName) || String.IsNullOrEmpty(RosterFull) || String.IsNullOrEmpty(NR2k3Dir))
             {
                 MessageBox.Show("Please enter all required data!", "Error Saving Series!", MessageBoxButton.OK, MessageBoxImage.Error);
-            } else
+            } 
+            else
             {
                 Series series = new Series
                 {
@@ -328,9 +330,29 @@ namespace NR2K3Results_MVVM.ViewModel
                 };
                 try
                 {
-                    if (selectedSeries != null) { context.Series.Remove(selectedSeries); }
-                    context.Series.Add(series);
-                    context.SaveChanges();
+                    if (selectedSeries != null)
+                    {
+                        context.Series.Remove(selectedSeries);
+                        context.Series.Add(series);
+                        context.SaveChanges();
+                        //send the data back to the main view model.
+                        Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
+                        window?.Close();
+                    }
+                    else if (context.Series.Where(d => d.SeriesName.Equals(series.SeriesName)).Count() > 0)
+                    {
+                        MessageBox.Show("Please enter a different series name!", "Error Saving Series!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                    }
+                    else
+                    {
+                        context.Series.Add(series);
+                        context.SaveChanges();
+                        //send the data back to the main view model.
+                        Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
+                        window?.Close();
+                    }
+                    
 
                 }
                 catch (DbUpdateException e)
@@ -338,9 +360,7 @@ namespace NR2K3Results_MVVM.ViewModel
                     MessageBox.Show("Error with database. Check if database file exists or is opened in another program.", "Database Error!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 
-                //send the data back to the main view model.
-                Messenger.Default.Send(new Model.AddDeleteOrModifySeriesMessage(Name));
-                window?.Close();
+             
             } 
             
         }
