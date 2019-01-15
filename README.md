@@ -15,7 +15,7 @@ You should be able to run the program by compiling it in Visual Studio 2017. How
 
 ## Examples and Usage
 Before and after examples can be found in the /Examples folder.
-  - input_html.html is the raw, unedited HTML that was fed to the program.
+  - [input_html.html](Examples/input_html.html) is the raw, unedited HTML that was fed to the program.
   - input.png is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
   - output.pdf is the end result of the program. 
   
