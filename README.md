@@ -14,10 +14,11 @@ The user must input some initial data, but this data is then stored in a persist
 You should be able to run the program by compiling it in Visual Studio 2017. However, it requires the game to be installed, so it may not be worth trying to run.
 
 ## Examples and Usage
-Before and after examples can be found in the /Examples folder.
+Examples of what it does:
   - [input_html.html](Examples/input_html.html) is the raw, unedited HTML that was fed to the program.
-  - input.png is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
-  - output.pdf is the end result of the program. 
+  - [input.png](Examples/input.png) is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
+  - [output.pdf](Examples/output.pdf) is the end result of the program. 
+    -- [Here](http://www.jayski.com/stats/2018/pdfs/12kan2018prac1.pdf) is a comparison to a **real world** example of what NASCAR officially releases, off which I base the outputted PDF on.
   
 ## How could I expand this?
 I have been busy with school lately and have not been able to work too much on this, but I have been thinking of how I could expand this.
