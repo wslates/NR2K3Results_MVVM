@@ -13,7 +13,10 @@ The user must input some initial data, but this data is then stored in a persist
 
 You should be able to run the program by compiling it in Visual Studio 2017. However, it requires the game to be installed, so it may not be worth trying to run.
 
-## Examples and Usage
+## Usage
+Visit the [wiki](https://github.com/wslates/NR2K3Results_MVVM/wiki/NR2k3-How-To-Wiki)!
+
+## Examples
 Examples of what it does:
   - [input_html.html](Examples/input_html.html) is the raw, unedited HTML that was fed to the program.
   - [input.png](Examples/input.png) is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
