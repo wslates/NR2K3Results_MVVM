@@ -1,6 +1,6 @@
 # NR2K3Results_MVVM
 
-##About
+## About
 
 A simple WPF MVVM application that takes exported NR2003 results and outputs them to PDFs that look like the official results NASCAR uses.
 
@@ -12,13 +12,13 @@ The user must input some initial data, but this data is then stored in a persist
 
 You should be able to run the program by compiling it in Visual Studio 2017. However, it requires the game to be installed, so it may not be worth trying to run.
 
-##Examples
+## Examples
 Before and after examples can be found in the /Examples folder.
   - input_html.html is the raw, unedited HTML that was fed to the program.
   - input.png is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
   - output.pdf is the end result of the program. 
   
-##How could I expand this?
+## How could I expand this?
 
 
 
