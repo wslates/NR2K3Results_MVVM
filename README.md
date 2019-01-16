@@ -19,8 +19,8 @@ Visit the [wiki](https://github.com/wslates/NR2K3Results_MVVM/wiki/NR2k3-How-To-
 ## Examples
 Examples of what it does:
   - [input_html.html](Examples/input_html.html) is the raw, unedited HTML that was fed to the program.
-  - [input.png](Examples/input.png) is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
-  - [output.pdf](Examples/output.pdf) is the end result of the program. 
+  - [input.png](Examples/input.PNG) is a screenshot of the relevant data from the input HTML file that was used to generate the output PDF.
+  - [output_pdf.pdf](Examples/output_pdf.pdf) is the end result of the program. 
     - [Here](http://www.jayski.com/stats/2018/pdfs/12kan2018prac1.pdf) is a comparison to a **real world** example of what NASCAR officially releases, off which I base the outputted PDF on. 
   
 ## How could I expand this?
